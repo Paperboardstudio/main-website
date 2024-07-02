@@ -1,0 +1,122 @@
+$color-text-primary: #333;
+$color-background-button: #000;
+$color-background-button-hover: #0056b3; 
+$color-border: #e1e1e1; 
+$color-placeholder: #aaa;
+$spacing-content: 2rem;
+$spacing-section: 1rem;
+$font-size-large: clamp(1.5rem, 5vw, 2rem); 
+$font-size-base: 1rem;
+$border-radius: 0.5rem; 
+$box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+$transition-duration: 0.3s; 
+$aspect-ratio: 16 / 9; 
+.services {
+  &__title {
+    text-align: center;
+    font-size: $font-size-large;
+    margin-bottom: $spacing-content;
+    font-weight: 300; 
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: $spacing-section;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.service-card {
+  background-color: #f0f0f0;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: $spacing-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow $transition-duration, transform $transition-duration;
+  height: 100%; 
+
+
+  &:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-5px); 
+  }
+
+  &__title {
+    font-size: $font-size-base + 0.25rem; 
+    color: $color-text-primary;
+    margin-bottom: $spacing-section;
+    font-weight: 600; 
+  }
+
+  &__image {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-border;
+    border-radius: $border-radius;
+    background-size: cover;
+    background-position: center center;
+    flex-grow: 1; 
+
+ 
+    &:before {
+      content: "";
+      display: block;
+      padding-top: 56.25%; 
+    }
+
+    &__description {
+      position: absolute; 
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      color: $color-placeholder;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: $spacing-section;
+    }
+  }
+
+  &__image-description {
+    text-align: center;
+    color: $color-placeholder;
+    font-size: $font-size-base;
+  }
+
+  &__technologies {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: auto;  
+  }
+
+  &__technology {
+    background-color: $color-background-button;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    font-size: $font-size-base;
+    color: white;
+    transition: background-color $transition-duration;
+
+    &:hover {
+      background-color: $color-background-button-hover;
+    }
+  }
+}

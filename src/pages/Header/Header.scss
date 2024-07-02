@@ -1,0 +1,36 @@
+@import '../../styles/variables';
+
+.header {
+  background-color: #fff;
+  padding: 1rem;
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  transition: transform 0.3s ease-in-out;
+
+  &--hidden {
+    transform: translateY(-100%);
+  }
+
+  &__nav {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  &__nav-link {
+    text-decoration: none;
+    color: $color-text-primary;
+    font-size: $font-size-base;
+    margin-left: $spacing-section;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      color: $color-background-button-hover;
+    }
+  }
+}

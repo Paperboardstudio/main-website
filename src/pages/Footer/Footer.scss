@@ -1,0 +1,77 @@
+@import '../../styles/variables';
+
+.footer {
+  background-color: #f8f8f8;
+  padding: 2rem 1rem;
+  font-family: 'Arial', sans-serif;
+  color: $color-text-primary;
+
+  &__container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  &__text {
+    font-size: $font-size-base;
+    margin-bottom: 0.5rem;
+  }
+
+  &__about,
+  &__links,
+  &__contact {
+    flex: 1 1 300px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  &__item {
+    margin-bottom: 0.5rem;
+  }
+
+  &__link {
+    text-decoration: none;
+    color: $color-text-primary;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      color: $color-background-button-hover;
+    }
+  }
+
+  &__social {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  &__social-link {
+    text-decoration: none;
+    color: $color-text-primary;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      color: $color-background-button-hover;
+    }
+  }
+
+  &__bottom {
+    text-align: center;
+    border-top: 1px solid $color-border;
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+}
