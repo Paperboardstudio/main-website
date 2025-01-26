@@ -22,14 +22,19 @@ $aspect-ratio: 16 / 9;
   &__list {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
+    padding: 2rem;
     gap: $spacing-section;
 
     @media (max-width: 1024px) {
       grid-template-columns: repeat(2, 1fr); 
+      padding: 2rem;
+
     }
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+      padding: 2rem;
+
     }
   }
 }
@@ -38,7 +43,8 @@ $aspect-ratio: 16 / 9;
   background-color: #f0f0f0;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
-  padding: $spacing-content;
+  padding-left: $spacing-content;
+  padding-right: $spacing-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,7 +74,7 @@ $aspect-ratio: 16 / 9;
     background-size: cover;
     background-position: center center;
     flex-grow: 1; 
-
+    margin-bottom: 1rem;
  
     &:before {
       content: "";

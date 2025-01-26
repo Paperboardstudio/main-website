@@ -1,36 +1,73 @@
 import React from 'react';
 import './Footer.scss';
 
+const footerData = {
+  about: {
+    title: 'About Us',
+    text: 'Delight, innovate, and inspire—these principles guide everything we do. We empowering local businesses with efficient tools. We are committed to delivering innovative solutions to our clients, driven by creativity and cutting-edge technology.',
+  },
+  quickLinks: [
+    { href: '#home', label: 'Home' },
+    { href: '#services', label: 'Services' },
+    { href: '#portfolio', label: 'Portfolio' },
+    { href: '#contact', label: 'Contact' },
+  ],
+  contact: {
+    title: 'Contact Us',
+    email: 'info@startup.com',
+    phone: '+123456789',
+    social: [
+      { href: 'https://facebook.com', label: 'Facebook' },
+      { href: 'https://twitter.com', label: 'Twitter' },
+      { href: 'https://linkedin.com', label: 'LinkedIn' },
+    ],
+  },
+  copyright: '2025. All rights reserved.',
+};
+
 export const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer__container">
         <div className="footer__about">
-          <h2 className="footer__title">About Us</h2>
-          <p className="footer__text">We are a startup committed to delivering innovative solutions to our clients. Our team is dedicated to driving success through creativity and cutting-edge technology.</p>
+          <h2 className="footer__title">{footerData.about.title}</h2>
+          <p className="footer__text">{footerData.about.text}</p>
         </div>
         <div className="footer__links">
           <h2 className="footer__title">Quick Links</h2>
           <ul className="footer__list">
-            <li className="footer__item"><a href="#home" className="footer__link">Home</a></li>
-            <li className="footer__item"><a href="#services" className="footer__link">Services</a></li>
-            <li className="footer__item"><a href="#portfolio" className="footer__link">Portfolio</a></li>
-            <li className="footer__item"><a href="#contact" className="footer__link">Contact</a></li>
+            {footerData.quickLinks.map((link, index) => (
+              <li className="footer__item" key={index}>
+                <a href={link.href} className="footer__link">{link.label}</a>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="footer__contact">
-          <h2 className="footer__title">Contact Us</h2>
-          <p className="footer__text">Email: <a href="mailto:info@startup.com" className="footer__link">info@startup.com</a></p>
-          <p className="footer__text">Phone: <a href="tel:+123456789" className="footer__link">+123 456 789</a></p>
+          <h2 className="footer__title">{footerData.contact.title}</h2>
+          <p className="footer__text">
+            Email: <a href={`mailto:${footerData.contact.email}`} className="footer__link">{footerData.contact.email}</a>
+          </p>
+          <p className="footer__text">
+            Phone: <a href={`tel:${footerData.contact.phone}`} className="footer__link">{footerData.contact.phone}</a>
+          </p>
           <div className="footer__social">
-            <a href="https://facebook.com" className="footer__social-link" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://twitter.com" className="footer__social-link" target="_blank" rel="noopener noreferrer">Twitter</a>
-            <a href="https://linkedin.com" className="footer__social-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            {footerData.contact.social.map((social, index) => (
+              <a
+                key={index}
+                href={social.href}
+                className="footer__social-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
       <div className="footer__bottom">
-        <p className="footer__text">&copy; 2024 Startup. All rights reserved.</p>
+        <p className="footer__text">{footerData.copyright}</p>
       </div>
     </footer>
   );

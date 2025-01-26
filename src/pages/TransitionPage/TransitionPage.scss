@@ -1,0 +1,29 @@
+@import '../../styles/variables';
+
+.transition-page {
+  position: relative;
+  width: 100%;
+  height: 120vh;
+  overflow: hidden !important;
+  scrollbar-width: none;
+}
+
+.transition-page::-webkit-scrollbar {
+  display: none;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.text-content {
+  position: absolute;
+  color: black;
+  font-size: 3rem;
+}
+
+.text-content:nth-child(3) {
+  font-size: 8rem;
+}
