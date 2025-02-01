@@ -57,9 +57,10 @@ const GlassPanel = ({ position, rotation }) => {
 
 const GlassSphere = () => {
   const groupRef = useRef();
+  const sphereRef = useRef(); // Add a ref for the sphere's position
 
   useFrame((state, delta) => {
-    groupRef.current.rotation.y += delta * 0.1;
+    groupRef.current.rotation.y += delta * 0.1; // Rotate the group
   });
 
   const panels = [];
@@ -83,7 +84,13 @@ const GlassSphere = () => {
     }
   }
 
-  return <group ref={groupRef}>{panels}</group>;
+  return (
+    <group position={[-2, 0, 0]} ref={sphereRef}> {/* Position the sphere */}
+      <group ref={groupRef}> {/* Rotate this group */}
+        {panels}
+      </group>
+    </group>
+  );
 };
 
 const RotatingPyramid = () => {
@@ -102,7 +109,7 @@ const RotatingPyramid = () => {
   });
 
   return (
-    <mesh ref={pyramidRef} position={[-1, 0.8, 0]}>
+    <mesh ref={pyramidRef} position={[-2, 0.8, 0]}>
       <coneGeometry args={[0.5, 1, 4]} />
       <meshStandardMaterial color="hotpink" emissive="pink" toneMapped={false} />
       <pointLight position={[-1, 0.8, 0]} intensity={8} distance={15} decay={2} />
@@ -111,12 +118,13 @@ const RotatingPyramid = () => {
 };
 
 const BackgroundText = ({ text, position, size }) => {
+  const finalPosition = [position[0] + 2, position[1], position[2]];
   return (
     <Text3D
-      position={position}
+      position={finalPosition}
       font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
-      size={size}
-      height={0.1}
+      size={size + 0.25}
+      height={0.125}
       curveSegments={12}
       bevelEnabled={false}
     >
