@@ -122,7 +122,7 @@ const BackgroundText = ({ text, position, size }) => {
   return (
     <Text3D
       position={finalPosition}
-      font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
+      font="/Libre_Bodoni_Medium_Regular.json"
       size={size + 0.25}
       height={0.125}
       curveSegments={12}
