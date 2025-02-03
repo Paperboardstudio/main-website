@@ -21,6 +21,19 @@
     justify-content: center;  // Also center the links themselves
     width: 100%;
     gap: 2rem; // Adds spacing between elements
+    align-items: center; // Ensures everything is aligned vertically
+  }
+
+  &__nav-logo {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 40px; // Increased size (Adjust as needed)
+      width: auto;
+      object-fit: contain;
+      margin-top: 2.5px; // Moves the logo slightly downward
+    }
   }
 
   &__nav-link {

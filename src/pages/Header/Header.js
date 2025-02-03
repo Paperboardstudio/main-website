@@ -22,7 +22,9 @@ export const Header = () => {
   return (
     <header className={`header ${scrollDirection === 'down' ? 'header--hidden' : ''}`}>
       <nav className="header__nav">
-        <a href="#home" className="header__nav-link">Home</a>
+        <a href="#home" className="header__nav-logo">
+          <img src="/PaperboardStudio_logo.png" alt="Paperboard Studio Logo" />
+        </a>
         <a href="#services" className="header__nav-link">Services</a>
         <a href="#portfolio" className="header__nav-link">Portfolio</a>
         <a href="#contact" className="header__nav-link">Contact</a>
