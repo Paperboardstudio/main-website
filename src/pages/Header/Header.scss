@@ -17,8 +17,10 @@
 
   &__nav {
     display: flex;
-    justify-content: flex-end;
+    /* Previously: justify-content: flex-end; */
+    justify-content: center;  // Also center the links themselves
     width: 100%;
+    gap: 2rem; // Adds spacing between elements
   }
 
   &__nav-link {
