@@ -85,7 +85,7 @@ const GlassSphere = () => {
   }
 
   return (
-    <group position={[-2, 0, 0]} ref={sphereRef}> {/* Position the sphere */}
+    <group position={[5.95, 2.575, 0]} scale={[2.65, 2.65, 2.65]} ref={sphereRef}> {/* Position the sphere */}
       <group ref={groupRef}> {/* Rotate this group */}
         {panels}
       </group>
@@ -99,7 +99,7 @@ const RotatingPyramid = () => {
 
   useFrame((state, delta) => {
     time.current += delta;
-    pyramidRef.current.position.y = Math.sin(time.current * 0.5) * 0.2; // Calmer up-and-down movement
+    pyramidRef.current.position.y = 0.5 + Math.sin(time.current * 0.5) * 0.2; // Calmer up-and-down movement
 
     if (Math.floor(time.current) % 4 === 0) {
       pyramidRef.current.material.emissiveIntensity = 10; // Radiate glow periodically
@@ -109,7 +109,7 @@ const RotatingPyramid = () => {
   });
 
   return (
-    <mesh ref={pyramidRef} position={[-2, 0.8, 0]}>
+    <mesh ref={pyramidRef} position={[5, 0.8, 0]} scale={[2.5, 2.5, 2.5]}>
       <coneGeometry args={[0.5, 1, 4]} />
       <meshStandardMaterial color="hotpink" emissive="pink" toneMapped={false} />
       <pointLight position={[-1, 0.8, 0]} intensity={8} distance={15} decay={2} />
@@ -118,12 +118,12 @@ const RotatingPyramid = () => {
 };
 
 const BackgroundText = ({ text, position, size }) => {
-  const finalPosition = [position[0] + 2, position[1], position[2]];
+  const finalPosition = [position[0], position[1], position[2]];
   return (
     <Text3D
       position={finalPosition}
       font="/Libre_Bodoni_Medium_Regular.json"
-      size={size + 0.25}
+      size={size + 0.15}
       height={0.125}
       curveSegments={12}
       bevelEnabled={false}
@@ -139,9 +139,13 @@ const LandingCanvas = () => {
     <div style={{ position: 'relative', width: '100%', height: '200vh' }}>
       <Canvas camera={{ position: [0, 0, 7], fov: 60 }} style={{ position: 'absolute', zIndex: 1, height: '100vh' }}>
         <ambientLight intensity={0.5} />
-        <Environment preset="studio" background />
-        <BackgroundText text="PAPERBOARD" position={[0, 0, -10]} size={1} />
-        <BackgroundText text="STUDIO" position={[0, -1.5, -10]} size={1} />
+        {/* Scene background color */}
+        <color attach="background" args={["black"]} />
+
+        {/* Keep environment for reflections, but not as background */}
+        <Environment preset="studio" />
+        <BackgroundText text="P A P E R B O A R D" position={[-15.5, 1.15, -10]} size={1} />
+        <BackgroundText text="S T U D I O" position={[-12.5, -1.15, -10]} size={1} />
         <GlassSphere />
         <RotatingPyramid />
         <OrbitControls enableZoom={false} enableRotate={false} />
