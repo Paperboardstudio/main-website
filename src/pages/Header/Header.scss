@@ -8,7 +8,7 @@
   top: 0;
   z-index: 1000;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; // Ensures content remains centered
   transition: transform 0.3s ease-in-out;
 
   &--hidden {
@@ -17,11 +17,17 @@
 
   &__nav {
     display: flex;
-    /* Previously: justify-content: flex-end; */
-    justify-content: center;  // Also center the links themselves
+    justify-content: space-between; // Pushes logo left and links right
+    align-items: center;
     width: 100%;
-    gap: 2rem; // Adds spacing between elements
-    align-items: center; // Ensures everything is aligned vertically
+    max-width: 1200px; // Ensures it doesn't stretch too much
+    padding: 0 2rem;
+  }
+
+  &__nav-left {
+    display: flex;
+    align-items: center;
+    margin-left: -1rem;
   }
 
   &__nav-logo {
@@ -29,18 +35,23 @@
     align-items: center;
 
     img {
-      height: 40px; // Increased size (Adjust as needed)
+      height: 50px; // Adjust size as needed
       width: auto;
       object-fit: contain;
-      margin-top: 2.5px; // Moves the logo slightly downward
+      margin-top: 0px; // Moves the logo slightly downward
     }
+  }
+
+  &__nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem; // Space between the links
   }
 
   &__nav-link {
     text-decoration: none;
     color: $color-text-primary;
     font-size: $font-size-base;
-    margin-left: $spacing-section;
     transition: color 0.3s ease;
 
     &:hover,
