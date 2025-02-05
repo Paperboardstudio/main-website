@@ -1,37 +1,60 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PortfolioPage.scss';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const portfolioItems = [
   {
-    imagePlaceholder: 'Picture of Clarita POS',
-    title: 'Mobile App Design and Development for POS',
-    description: 'Clarita POS enables cashiers to process transactions and store owners to visualize sales reporting and analytics.',
+    image: '/images/Image1.webp', // ensure these images exist in your public folder
+    title: 'ClaritApp: Mobile POS',
   },
   {
-    imagePlaceholder: 'Picture of AR car app',
+    image: '/images/Image2.webp',
     title: 'Car Dealership AR',
-    description: 'Augmented Reality app that assists the salesperson with accessible information and a faster quote.',
   },
 ];
 
 export const Portfolio = () => {
+  useEffect(() => {
+    // Animate each portfolio item (fade in and slight scale up) as they become visible in horizontal scroll.
+    const items = gsap.utils.toArray('.portfolio-highlights__item');
+    items.forEach((item) => {
+      gsap.fromTo(
+        item,
+        { opacity: 0, scale: 0.95 },
+        {
+          opacity: 1,
+          scale: 1,
+          ease: "power2.out",
+          duration: 1,
+          scrollTrigger: {
+            trigger: item,
+            start: "left center",
+            end: "right center",
+            toggleActions: "play none none reverse",
+            scroller: ".portfolio-highlights", // use this section as the scroll container
+            // markers: true, // uncomment for debugging
+          },
+        }
+      );
+    });
+  }, []);
+
   return (
-    <section className="portfolio-wrapper">
-      <div className="portfolio">
-        <h2 className="portfolio__title">Our Portfolio</h2>
-        <div className="portfolio__items">
-          {portfolioItems.map((item, index) => (
-            <div className="portfolio__item" key={index}>
-              <div className="portfolio__item-image">
-                <span className="portfolio__item-image-placeholder">{item.imagePlaceholder}</span>
-              </div>
-              <div className="portfolio__item-description">
-                <h3 className="portfolio__item-title">{item.title}</h3>
-                <p className="portfolio__item-text">{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+    <section className="portfolio-highlights">
+      <div className="portfolio-highlights__container">
+        {portfolioItems.map((item, index) => (
+          <div className="portfolio-highlights__item" key={index}>
+            <img
+              src={item.image}
+              alt={item.title}
+              className="portfolio-highlights__image"
+            />
+            <h3 className="portfolio-highlights__title">{item.title}</h3>
+          </div>
+        ))}
       </div>
     </section>
   );
