@@ -10,19 +10,33 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch; // smooth scrolling on iOS
 
+  /* This ensures that snapping respects a left-side offset */
+  scroll-padding-left: 5vw;
+
+  &__section-title {
+    position: absolute;
+    top: 3rem;       /* Increased from 2rem for better vertical positioning */
+    left: 5vw;       /* Align with the scroll-padding */
+    z-index: 3;
+    color: #fff;
+    font-size: 5rem; /* Increased font size to match Apple's style */
+    font-weight: bold;
+    text-transform: uppercase;  /* Matches the feel of Apple's title */
+    letter-spacing: -0.05em;
+  }
+
   &__container {
     display: flex;
     height: 100%;
-    /* Add extra left padding so the first item is separated from the edge */
-    padding-left: 5vw;
-    /* Small gap between items */
+    /* Remove left padding here to avoid conflicts with scroll-padding */
     gap: 1vw;
+    padding-left: 5vw; /* Ensure the first item has extra separation */
   }
 
   &__item {
     position: relative;
     /* Each item occupies slightly less than the full viewport width for separation */
-    flex: 0 0 calc(100vw - 10vw);
+    flex: 0 0 calc(100vw - 15vw); /* Adjusted to account for container padding and desired margins */
     height: 90vh;
     display: flex;
     align-items: center;
@@ -39,7 +53,7 @@
     display: block;
   }
 
-  &__title {
+  &__item-title {
     position: absolute;
     top: 2rem;
     left: 2rem;

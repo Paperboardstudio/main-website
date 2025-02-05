@@ -14,6 +14,10 @@ const portfolioItems = [
     image: '/images/Image2.webp',
     title: 'Car Dealership AR',
   },
+  {
+    image: '/images/Image3.webp', // new item added
+    title: 'Distant Paradise',
+  },
 ];
 
 export const Portfolio = () => {
@@ -44,6 +48,8 @@ export const Portfolio = () => {
 
   return (
     <section className="portfolio-highlights">
+      {/* Section Title */}
+      <h2 className="portfolio-highlights__section-title"></h2>
       <div className="portfolio-highlights__container">
         {portfolioItems.map((item, index) => (
           <div className="portfolio-highlights__item" key={index}>
@@ -52,7 +58,7 @@ export const Portfolio = () => {
               alt={item.title}
               className="portfolio-highlights__image"
             />
-            <h3 className="portfolio-highlights__title">{item.title}</h3>
+            <h3 className="portfolio-highlights__item-title">{item.title}</h3>
           </div>
         ))}
       </div>
