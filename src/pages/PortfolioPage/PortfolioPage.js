@@ -16,7 +16,7 @@ const portfolioItems = [
   },
   {
     image: '/images/Image3.webp', // new item added
-    title: 'Distant Paradise',
+    title: 'Distant Paradise: Mobile game',
   },
 ];
 
@@ -49,7 +49,7 @@ export const Portfolio = () => {
   return (
     <section className="portfolio-highlights">
       {/* Section Title */}
-      <h2 className="portfolio-highlights__section-title"></h2>
+      <h2 className="portfolio-highlights__section-title">Our Portfolio</h2>
       <div className="portfolio-highlights__container">
         {portfolioItems.map((item, index) => (
           <div className="portfolio-highlights__item" key={index}>
