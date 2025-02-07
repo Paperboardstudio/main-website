@@ -17,11 +17,9 @@ const App = () => {
       </section>
 
       {/* Transition Page (Commented Out) */}
-      {/*
-      <section style={{ height: '150vh', position: 'relative'}}>
+      <section style={{ height: '100vh'}}>
         <TransitionPage />
       </section>
-      */}
 
       {/* Main Page */}
       <section style={{ height: '100vh' }}>
