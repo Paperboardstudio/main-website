@@ -6,22 +6,20 @@
   height: 100vh;
   background-color: #000; /* Black background */
   overflow: hidden;
-  border: 2px solid red; /* TEMPORARY: Add border to visualize .transition-page */ /* ADDED LINE */
 
-  & .canvas { /*  More specific rule */
+  .canvas {
     width: 100%;
     height: 100%;
-    display: block; /* Explicitly set display: block; */
+    display: block;
   }
 
   .transition-message {
-    /* ... rest of your .transition-message styles (without position: absolute) ... */
     color: #fff;
-    font-size: 3rem;
+    font-size: 2rem;
     text-align: center;
     max-width: 1200px;
-    width: 90%;
-    line-height: 1.5;
+    width: 60vw;
     padding: 1rem;
+    margin: 0 auto;
   }
 }
