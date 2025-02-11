@@ -13,8 +13,8 @@ const footerData = {
   ],
   contact: {
     title: 'Contact Us',
-    email: 'info@startup.com',
-    phone: '+123456789',
+    email: 'contact@paperboardstudio.com',
+    phone: '+358',
     social: [
       { href: 'https://facebook.com', label: 'Facebook' },
       { href: 'https://twitter.com', label: 'Twitter' },
