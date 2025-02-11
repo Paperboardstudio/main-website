@@ -3,8 +3,7 @@ import './Footer.scss';
 
 const footerData = {
   about: {
-    title: 'About Us',
-    text: 'Delight, innovate, and inspire—these principles guide everything we do. We provide entrepreneurs and companies around the world with efficient and innovative tools.  Leveraging cutting-edge technology and creativity, we are committed to creating solutions that deliver results for our clients.',
+    title: 'Delight, Innovate, & Inspire.',
   },
   quickLinks: [
     { href: '#home', label: 'Home' },

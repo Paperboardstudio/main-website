@@ -1,10 +1,10 @@
 @import '../../styles/variables';
 
 .footer {
-  background-color: #f8f8f8;
+  background-color: #000;
   padding: 2rem 1rem;
   font-family: 'Arial', sans-serif;
-  color: $color-text-primary;
+  color: #fff;
 
   &__container {
     display: flex;
@@ -25,7 +25,15 @@
     margin-bottom: 0.5rem;
   }
 
-  &__about,
+  &__about {
+    flex: 1 1 300px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: flex-start; 
+    text-align: center; 
+  }
   &__links,
   &__contact {
     flex: 1 1 300px;
@@ -43,7 +51,7 @@
 
   &__link {
     text-decoration: none;
-    color: $color-text-primary;
+    color: #fff;
     transition: color 0.3s ease;
 
     &:hover,
@@ -60,7 +68,7 @@
 
   &__social-link {
     text-decoration: none;
-    color: $color-text-primary;
+    color: #fff;
     transition: color 0.3s ease;
 
     &:hover,
