@@ -7,15 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 const portfolioItems = [
   {
-    image: '/images/Image1.webp', // ensure these images exist in your public folder
+    image: '/images/Image1.png', // ensure these images exist in your public folder
     title: 'ClaritApp: Mobile POS',
   },
   {
-    image: '/images/Image2.webp',
+    image: '/images/Image2.png',
     title: 'Car Dealership AR',
   },
   {
-    image: '/images/Image3.webp', // new item added
+    image: '/images/Image3.png', // new item added
     title: 'Distant Paradise: Mobile game',
   },
 ];

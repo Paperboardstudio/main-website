@@ -23,19 +23,19 @@ export const Services = () => {
   const services = [
     {
       title: 'Mobile app development',
-      image: '/images/service1.webp', // Use the image from the public folder
+      image: '/images/service1.png', // Use the image from the public folder
       technologies: ['Swift', 'React Native', 'FlutterJS', 'Kotlin'],
       imageAlt: 'Mobile development concepts',
     },
     {
       title: 'Solid design solutions',
-      image: '/images/service2.webp',
+      image: '/images/service2.jpg',
       technologies: ['Figma', 'Adobe AfterEffects', 'Adobe Illustrator', 'Blender', 'Cinema 4D'],
       imageAlt: 'Design tools and artwork',
     },
     {
       title: 'Web development',
-      image: '/images/service3.webp',
+      image: '/images/service3.png',
       technologies: ['ReactJS', 'VueJS', 'NodeJS', 'Webflow'],
       imageAlt: 'Web development environment',
     },
