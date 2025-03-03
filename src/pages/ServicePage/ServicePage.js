@@ -23,7 +23,7 @@ export const Services = () => {
   const services = [
     {
       title: 'Mobile app development',
-      image: '/images/service1.png', // Use the image from the public folder
+      image: '/images/service1.png', 
       technologies: ['Swift', 'React Native', 'FlutterJS', 'Kotlin'],
       imageAlt: 'Mobile development concepts',
     },

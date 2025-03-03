@@ -8,7 +8,7 @@
   top: 0;
   z-index: 1000;
   display: flex;
-  justify-content: center; // Ensures content remains centered
+  justify-content: center; 
   transition: transform 0.3s ease-in-out;
 
   &--hidden {
@@ -17,10 +17,10 @@
 
   &__nav {
     display: flex;
-    justify-content: space-between; // Pushes logo left and links right
+    justify-content: space-between; 
     align-items: center;
     width: 100%;
-    max-width: 1200px; // Ensures it doesn't stretch too much
+    max-width: 1200px; 
     padding: 0 2rem;
   }
 
@@ -35,17 +35,17 @@
     align-items: center;
 
     img {
-      height: 50px; // Adjust size as needed
+      height: 50px; 
       width: auto;
       object-fit: contain;
-      margin-top: 0px; // Moves the logo slightly downward
+      margin-top: 0px; 
     }
   }
 
   &__nav-right {
     display: flex;
     align-items: center;
-    gap: 2rem; // Space between the links
+    gap: 2rem; 
   }
 
   &__nav-link {

@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const portfolioItems = [
   {
-    image: '/images/Image1.png', // ensure these images exist in your public folder
+    image: '/images/Image1.png', 
     title: 'ClaritApp: Mobile POS',
   },
   {
@@ -15,14 +15,13 @@ const portfolioItems = [
     title: 'Car Dealership AR',
   },
   {
-    image: '/images/Image3.png', // new item added
+    image: '/images/Image3.png', 
     title: 'Distant Paradise: Mobile game',
   },
 ];
 
 export const Portfolio = () => {
   useEffect(() => {
-    // Animate each portfolio item (fade in and slight scale up) as they become visible in horizontal scroll.
     const items = gsap.utils.toArray('.portfolio-highlights__item');
     items.forEach((item) => {
       gsap.fromTo(
@@ -38,8 +37,7 @@ export const Portfolio = () => {
             start: "left center",
             end: "right center",
             toggleActions: "play none none reverse",
-            scroller: ".portfolio-highlights", // use this section as the scroll container
-            // markers: true, // uncomment for debugging
+            scroller: ".portfolio-highlights", 
           },
         }
       );

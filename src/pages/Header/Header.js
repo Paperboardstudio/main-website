@@ -22,14 +22,14 @@ export const Header = () => {
   return (
     <header className={`header ${scrollDirection === 'down' ? 'header--hidden' : ''}`}>
       <nav className="header__nav">
-        {/* Left side: Logo */}
+        {}
         <div className="header__nav-left">
           <a href="#home" className="header__nav-logo">
             <img src="/PaperboardStudio_logo.png" alt="Paperboard Studio Logo" />
           </a>
         </div>
 
-        {/* Right side: Links */}
+        {}
         <div className="header__nav-right">
           <a href="#services" className="header__nav-link">Services</a>
           <a href="#portfolio" className="header__nav-link">Portfolio</a>

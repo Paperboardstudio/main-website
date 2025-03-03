@@ -1,43 +1,40 @@
 @import '../../styles/variables';
 
 .portfolio-highlights {
-  /* Occupies full viewport height; enable horizontal scrolling only */
   height: 120vh;
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
-  background-color: #000; // adjust as desired
+  background-color: #000; 
   scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch; // smooth scrolling on iOS
+  -webkit-overflow-scrolling: touch; 
 
-  /* This ensures that snapping respects a left-side offset */
+
   scroll-padding-left: 5vw;
 
   &__section-title {
     position: absolute;
-    top: 0rem;       /* Increased from 2rem for better vertical positioning */
-    left: 5vw;       /* Align with the scroll-padding */
+    top: 0rem;       
+    left: 5vw;       
     z-index: 3;
     color: #fff;
-    font-size: 4rem; /* Increased font size to match Apple's style */
+    font-size: 4rem; 
     font-weight:bold;
-    //text-transform: uppercase;  /* Matches the feel of Apple's title */
     letter-spacing: 0.0em;
   }
 
   &__container {
     display: flex;
     height: 100%;
-    /* Remove left padding here to avoid conflicts with scroll-padding */
+
     gap: 1vw;
-    padding-left: 5vw; /* Ensure the first item has extra separation */
+    padding-left: 5vw; 
     align-items: flex-end;
   }
 
   &__item {
     position: relative;
-    /* Each item occupies slightly less than the full viewport width for separation */
-    flex: 0 0 calc(100vw - 15vw); /* Adjusted to account for container padding and desired margins */
+    flex: 0 0 calc(100vw - 15vw); 
     height: 90vh;
     display: flex;
     align-items: center;
@@ -49,7 +46,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Create the “squircle” look with rounded edges */
     border-radius: 2rem;
     display: block;
   }
