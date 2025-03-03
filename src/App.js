@@ -11,17 +11,17 @@ const App = () => {
   return (
     <div className="app" style={{ overflow: 'auto', height: '100vh', scrollBehavior: 'smooth' }}>
       <Header />
-      {/* Landing Page */}
+      {}
       <section style={{ height: '100vh' }}>
         <LandingPage />
       </section>
 
-      {/* Transition Page (Commented Out) */}
+      {}
       <section style={{ height: '100vh'}}>
         <TransitionPage />
       </section>
 
-      {/* Main Page */}
+      {}
       <section style={{ height: '100vh' }}>
         <MainPage />
       </section>
