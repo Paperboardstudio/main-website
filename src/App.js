@@ -16,8 +16,8 @@ const App = () => {
         <LandingPage />
       </section>
 
-      {/* Transition Page */}
-      <section style={{ height: '150vh', position: 'relative'}}>
+      {/* Transition Page (Commented Out) */}
+      <section style={{ height: '100vh'}}>
         <TransitionPage />
       </section>
 

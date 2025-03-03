@@ -3,27 +3,23 @@
 .transition-page {
   position: relative;
   width: 100%;
-  height: 120vh;
-  overflow: hidden !important;
-  scrollbar-width: none;
-}
+  height: 100vh;
+  background-color: #000; /* Black background */
+  overflow: hidden;
 
-.transition-page::-webkit-scrollbar {
-  display: none;
-}
+  .canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
-.canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.text-content {
-  position: absolute;
-  color: black;
-  font-size: 3rem;
-}
-
-.text-content:nth-child(3) {
-  font-size: 8rem;
+  .transition-message {
+    color: #fff;
+    font-size: 2rem;
+    text-align: center;
+    max-width: 1200px;
+    width: 55vw;
+    padding: 1rem;
+    margin: 0 auto;
+  }
 }

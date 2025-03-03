@@ -3,8 +3,7 @@ import './Footer.scss';
 
 const footerData = {
   about: {
-    title: 'About Us',
-    text: 'Delight, innovate, and inspire—these principles guide everything we do. We empowering local businesses with efficient tools. We are committed to delivering innovative solutions to our clients, driven by creativity and cutting-edge technology.',
+    title: 'Delight, Innovate, & Inspire.',
   },
   quickLinks: [
     { href: '#home', label: 'Home' },
@@ -14,8 +13,8 @@ const footerData = {
   ],
   contact: {
     title: 'Contact Us',
-    email: 'info@startup.com',
-    phone: '+123456789',
+    email: 'contact@paperboardstudio.com',
+    phone: '+358',
     social: [
       { href: 'https://facebook.com', label: 'Facebook' },
       { href: 'https://twitter.com', label: 'Twitter' },

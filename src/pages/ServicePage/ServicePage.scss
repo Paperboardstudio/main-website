@@ -1,128 +1,70 @@
-$color-text-primary: #333;
-$color-background-button: #000;
-$color-background-button-hover: #0056b3; 
-$color-border: #e1e1e1; 
-$color-placeholder: #aaa;
-$spacing-content: 2rem;
-$spacing-section: 1rem;
-$font-size-large: clamp(1.5rem, 5vw, 2rem); 
-$font-size-base: 1rem;
-$border-radius: 0.5rem; 
-$box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
-$transition-duration: 0.3s; 
-$aspect-ratio: 16 / 9; 
+@import '../../styles/variables';
+
 .services {
+  position: relative;
+  padding: 3rem 2rem 2rem;  // Top padding leaves space for the title
+  background-color: #000;
+  
+  /* The section title is positioned top left */
   &__title {
-    text-align: center;
-    font-size: $font-size-large;
-    margin-bottom: $spacing-content;
-    font-weight: 300; 
+    position: absolute;
+    top: 1rem;
+    left: 5vw; 
+    font-size: 4rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
   }
 
   &__list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    padding: 2rem;
-    gap: $spacing-section;
-
-    @media (max-width: 1024px) {
-      grid-template-columns: repeat(2, 1fr); 
-      padding: 2rem;
-
-    }
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-      padding: 2rem;
-
-    }
+    margin-top: 4rem;  // Leave room for the absolutely positioned title
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
   }
 }
 
 .service-card {
-  background-color: #f0f0f0;
-  border-radius: $border-radius;
-  box-shadow: $box-shadow;
-  padding-left: $spacing-content;
-  padding-right: $spacing-content;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: box-shadow $transition-duration, transform $transition-duration;
-  height: 100%; 
-
-
-  &:hover {
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); 
-    transform: translateY(-5px); 
-  }
+  width: 100%;
+  display: flex; // Added flex container
+  flex-direction: column; // Stack elements vertically
+  align-items: center; // Center items horizontally if needed
 
   &__title {
-    font-size: $font-size-base + 0.25rem; 
-    color: $color-text-primary;
-    margin-bottom: $spacing-section;
-    font-weight: 600; 
+    font-size: 2.5rem;
+    font-weight: normal;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem; // Space between title and image
   }
 
   &__image {
+    position: relative;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $color-border;
-    border-radius: $border-radius;
-    background-size: cover;
-    background-position: center center;
-    flex-grow: 1; 
-    margin-bottom: 1rem;
- 
-    &:before {
-      content: "";
+    
+    img {
+      width: 100%;
       display: block;
-      padding-top: 56.25%; 
-    }
-
-    &__description {
-      position: absolute; 
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      color: $color-placeholder;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: $spacing-section;
+      object-fit: cover;
     }
   }
-
-  &__image-description {
-    text-align: center;
-    color: $color-placeholder;
-    font-size: $font-size-base;
-  }
-
+  
   &__technologies {
     list-style: none;
     padding: 0;
+    margin: 1rem 0 0;
     display: flex;
-    flex-wrap: wrap;
+    gap: 1rem;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: auto;  
-  }
-
-  &__technology {
-    background-color: $color-background-button;
-    border-radius: $border-radius;
-    padding: 0.5rem 1rem;
-    font-size: $font-size-base;
-    color: white;
-    transition: background-color $transition-duration;
-
-    &:hover {
-      background-color: $color-background-button-hover;
+    flex-wrap: wrap;
+    
+    &__technology,
+    .service-card__technology {
+      background-color: #eee;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 1rem;
+      color: #333;
     }
   }
 }
