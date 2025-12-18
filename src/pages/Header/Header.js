@@ -34,7 +34,7 @@ export const Header = () => {
         {}
         <div className="header__nav-left">
           <a href="#home" className="header__nav-logo">
-            <img src="/PaperboardStudio_logo.png" alt="Paperboard Studio Logo" loading="eager" decoding="async" />
+            <img src="/PaperboardStudio_logo_nobg_whiteoutline.png" alt="Paperboard Studio Logo" loading="eager" decoding="async" />
           </a>
         </div>
 

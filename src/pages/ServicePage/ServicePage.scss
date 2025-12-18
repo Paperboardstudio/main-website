@@ -2,71 +2,107 @@
 
 .services {
   position: relative;
-  padding: 3rem 2rem 2rem; 
+  padding: 6rem 2rem 4rem;
   background-color: #000;
-  
+
+  // If you keep overflow hidden, animations can look cleaner,
+  // but it can also clip things depending on transforms.
+  // This is usually safe, but if you still see clipping, switch to visible.
+  overflow: hidden;
+
   &__title {
     position: absolute;
     top: 1rem;
-    left: 5vw; 
+    left: 5vw;
     font-size: 4rem;
     font-weight: bold;
     color: #fff;
     margin: 0;
+    z-index: 10;
+    pointer-events: none;
   }
 
   &__list {
-    margin-top: 4rem; 
+    margin-top: 4rem;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 5rem;
   }
 }
 
 .service-card {
   width: 100%;
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  // IMPORTANT: make sure it's visible even before GSAP kicks in
+  opacity: 1;
+  transform: translateY(0);
+
+  // You can keep contain, but "content" can cause weird paint issues.
+  // "layout style" is safer than "content".
+  contain: layout style;
+
+  min-height: 400px;
+  will-change: transform, opacity;
 
   &__title {
-    font-size: 2.5rem;
-    font-weight: normal;
+    // FIX: without this, your title can render black on black
     color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem;
     text-align: center;
-    margin-bottom: 1rem;
+    max-width: 900px;
   }
 
   &__image {
     position: relative;
     width: 100%;
-    
+    max-width: 900px;
+    border-radius: 2rem;
+    overflow: hidden;
+    background-color: #111;
+
     img {
       width: 100%;
+      height: auto;
       display: block;
       object-fit: cover;
-      will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
+
+      // Optional: if image fails, make it obvious instead of "nothing"
+      &[data-broken='true'] {
+        min-height: 320px;
+        background: #151515;
+      }
     }
   }
-  
+
   &__technologies {
     list-style: none;
     padding: 0;
-    margin: 1rem 0 0;
+    margin: 2rem 0 0;
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     justify-content: center;
     flex-wrap: wrap;
-    
-    &__technology,
+    max-width: 900px;
+
     .service-card__technology {
-      background-color: #202020;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 1rem;
+      background-color: #1a1a1a;
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
       color: #ffffff;
+      border: 1px solid #333;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #333;
+      }
     }
   }
 }

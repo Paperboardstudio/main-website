@@ -1,98 +1,160 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PortfolioPage.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const portfolioItems = [
-  {
-    image: '/images/portfolio1.webp', 
-    title: 'ClaritApp: Mobile POS',
-  },
-  {
-    image: '/images/portfolio2.webp',
-    title: 'Car Dealership AR',
-  },
-  {
-    image: '/images/portfolio3.webp', 
-    title: 'Distant Paradise: Mobile game',
-  },
-];
+const Portfolio = () => {
+  const sectionRef = useRef(null);
+  const railRef = useRef(null);
 
-export const Portfolio = () => {
-  useEffect(() => {
-    let animations = [];
-    let timeoutId;
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
-    // Use requestAnimationFrame to ensure DOM is ready
-    const initAnimations = () => {
-      const items = gsap.utils.toArray('.portfolio-highlights__item');
-      if (items.length === 0) return;
+  const portfolioItems = useMemo(
+    () => [
+      {
+        eyebrow: 'Mobile POS',
+        title: 'ClaritApp',
+        image: '/images/portfolio1.webp',
+      },
+      {
+        eyebrow: 'Augmented Reality',
+        title: 'Car Dealership AR',
+        image: '/images/portfolio2.webp',
+      },
+      {
+        eyebrow: 'Mobile Game',
+        title: 'Distant Paradise',
+        image: '/images/portfolio3.webp',
+      },
+    ],
+    []
+  );
 
-      animations = items.map((item) => {
-        return gsap.fromTo(
-          item,
-          { opacity: 0, scale: 0.95 },
-          {
-            opacity: 1,
-            scale: 1,
-            ease: "power2.out",
-            duration: 1,
-            scrollTrigger: {
-              trigger: item,
-              start: "top 80%",
-              end: "bottom 20%",
-              toggleActions: "play none none none",
-              // Remove scroller option - use default window scroll
-            },
-          }
-        );
+  useLayoutEffect(() => {
+    if (!sectionRef.current) return;
+
+    const reduceMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray('.portfolio-tiles__card');
+      if (reduceMotion) return;
+
+      gsap.set(cards, { opacity: 0, y: 18 });
+
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          once: true,
+          invalidateOnRefresh: true,
+        },
       });
+    }, sectionRef);
 
-      // Refresh ScrollTrigger after setup to recalculate positions
-      ScrollTrigger.refresh();
-    };
+    ScrollTrigger.refresh();
+    return () => ctx.revert();
+  }, []);
 
-    // Delay initialization slightly to ensure DOM is ready
-    timeoutId = setTimeout(() => {
-      requestAnimationFrame(initAnimations);
-    }, 100);
+  const updatePaddles = () => {
+    const el = railRef.current;
+    if (!el) return;
+
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
+  };
+
+  useLayoutEffect(() => {
+    updatePaddles();
+
+    const el = railRef.current;
+    if (!el) return;
+
+    const onScroll = () => updatePaddles();
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    const onResize = () => updatePaddles();
+    window.addEventListener('resize', onResize);
 
     return () => {
-      clearTimeout(timeoutId);
-      // Clean up all animations
-      animations.forEach((anim) => {
-        if (anim && anim.scrollTrigger) {
-          anim.scrollTrigger.kill();
-        }
-        if (anim) {
-          anim.kill();
-        }
-      });
-      animations = [];
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
+  const scrollByCards = (direction) => {
+    const el = railRef.current;
+    if (!el) return;
+
+    const card = el.querySelector('.portfolio-tiles__card');
+    const step = card ? card.getBoundingClientRect().width + 24 : 420;
+
+    el.scrollBy({
+      left: direction === 'left' ? -step : step,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <section className="portfolio-highlights">
-      {/* Section Title */}
-      <h2 className="portfolio-highlights__section-title">Our Portfolio</h2>
-      <div className="portfolio-highlights__container">
-        {portfolioItems.map((item, index) => (
-          <div className="portfolio-highlights__item" key={index}>
-            <img
-              src={item.image}
-              alt={item.title}
-              className="portfolio-highlights__image"
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding="async"
-              fetchpriority={index === 0 ? "high" : "auto"}
-            />
-            <h3 className="portfolio-highlights__item-title">{item.title}</h3>
-          </div>
-        ))}
+    <section className="portfolio-tiles" ref={sectionRef} aria-labelledby="portfolioTitle">
+      <div className="portfolio-tiles__header">
+        <h2 className="portfolio-tiles__title" id="portfolioTitle">
+          Our Portfolio
+        </h2>
+      </div>
+
+      <div className="portfolio-tiles__railWrap">
+        <button
+          type="button"
+          className="portfolio-tiles__paddle portfolio-tiles__paddle--left"
+          onClick={() => scrollByCards('left')}
+          aria-label="Scroll left"
+          disabled={!canScrollLeft}
+        />
+        <button
+          type="button"
+          className="portfolio-tiles__paddle portfolio-tiles__paddle--right"
+          onClick={() => scrollByCards('right')}
+          aria-label="Scroll right"
+          disabled={!canScrollRight}
+        />
+
+        <div className="portfolio-tiles__rail" ref={railRef}>
+          {portfolioItems.map((item) => (
+            <article className="portfolio-tiles__card" key={item.title}>
+              <div className="portfolio-tiles__media" aria-hidden="true">
+                <img
+                  src={item.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={() => ScrollTrigger.refresh()}
+                />
+                <div className="portfolio-tiles__overlay" />
+              </div>
+
+              <div className="portfolio-tiles__content">
+                <div className="portfolio-tiles__eyebrow">{item.eyebrow}</div>
+                <h3 className="portfolio-tiles__cardTitle">{item.title}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
 };
+
+export default Portfolio;
+export { Portfolio };
