@@ -6,7 +6,7 @@ export const ServiceCard = ({ title, technologies, image, imageAlt }) => {
     <div className="service-card">
       <h2 className="service-card__title">{title}</h2>
       <div className="service-card__image">
-        <img src={image} alt={imageAlt} />
+        <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
       </div>
       <ul className="service-card__technologies">
         {technologies.map((tech) => (

@@ -23,8 +23,8 @@ const portfolioItems = [
 export const Portfolio = () => {
   useEffect(() => {
     const items = gsap.utils.toArray('.portfolio-highlights__item');
-    items.forEach((item) => {
-      gsap.fromTo(
+    const animations = items.map((item) => {
+      return gsap.fromTo(
         item,
         { opacity: 0, scale: 0.95 },
         {
@@ -42,6 +42,15 @@ export const Portfolio = () => {
         }
       );
     });
+
+    return () => {
+      animations.forEach((anim) => {
+        if (anim.scrollTrigger) {
+          anim.scrollTrigger.kill();
+        }
+        anim.kill();
+      });
+    };
   }, []);
 
   return (
@@ -55,6 +64,8 @@ export const Portfolio = () => {
               src={item.image}
               alt={item.title}
               className="portfolio-highlights__image"
+              loading="lazy"
+              decoding="async"
             />
             <h3 className="portfolio-highlights__item-title">{item.title}</h3>
           </div>

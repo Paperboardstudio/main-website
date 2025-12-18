@@ -40,6 +40,7 @@
     align-items: center;
     justify-content: center;
     scroll-snap-align: start;
+    contain: layout style paint;
   }
 
   &__image {
@@ -48,6 +49,9 @@
     object-fit: cover;
     border-radius: 2rem;
     display: block;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   &__item-title {

@@ -10,6 +10,8 @@
   display: flex;
   justify-content: center; 
   transition: transform 0.3s ease-in-out;
+  will-change: transform;
+  transform: translateZ(0);
 
   &--hidden {
     transform: translateY(-100%);

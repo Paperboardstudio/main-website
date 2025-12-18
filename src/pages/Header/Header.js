@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './Header.scss';
 
 export const Header = () => {
   const [scrollDirection, setScrollDirection] = useState('up');
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY && window.scrollY > 100) {
-        setScrollDirection('down');
-      } else {
-        setScrollDirection('up');
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+            setScrollDirection('down');
+          } else {
+            setScrollDirection('up');
+          }
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
       }
-      setLastScrollY(window.scrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
     <header className={`header ${scrollDirection === 'down' ? 'header--hidden' : ''}`}>
@@ -25,7 +34,7 @@ export const Header = () => {
         {}
         <div className="header__nav-left">
           <a href="#home" className="header__nav-logo">
-            <img src="/PaperboardStudio_logo.png" alt="Paperboard Studio Logo" />
+            <img src="/PaperboardStudio_logo.png" alt="Paperboard Studio Logo" loading="eager" decoding="async" />
           </a>
         </div>
 

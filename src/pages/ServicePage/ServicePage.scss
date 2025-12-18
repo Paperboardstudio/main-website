@@ -34,7 +34,7 @@
     font-weight: normal;
     color: #fff;
     text-align: center;
-    margin-bottom: 1rem; c
+    margin-bottom: 1rem;
   }
 
   &__image {
@@ -45,6 +45,9 @@
       width: 100%;
       display: block;
       object-fit: cover;
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
   }
   
