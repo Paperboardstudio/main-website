@@ -29,10 +29,20 @@ export const Header = () => {
   }, []);
 
   const handleAnchorClick = (e) => {
+    e.preventDefault();
     const href = e.currentTarget.getAttribute('href');
     if (href && href.startsWith('#')) {
-      e.preventDefault();
       const targetId = href.substring(1);
+      
+      // Special handling for contact - scroll to bottom
+      if (targetId === 'contact') {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+        return;
+      }
+      
       const targetElement = document.getElementById(targetId);
       
       if (targetElement) {
@@ -41,7 +51,7 @@ export const Header = () => {
         const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
 
         window.scrollTo({
-          top: offsetPosition,
+          top: Math.max(0, offsetPosition),
           behavior: 'smooth'
         });
       }
