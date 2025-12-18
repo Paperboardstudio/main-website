@@ -14,11 +14,11 @@ const footerData = {
   contact: {
     title: 'Contact Us',
     email: 'contact@paperboardstudio.com',
-    phone: '+358',
+    phone: '+358469371879',
     social: [
-      { href: 'https://facebook.com', label: 'Facebook' },
-      { href: 'https://twitter.com', label: 'Twitter' },
-      { href: 'https://linkedin.com', label: 'LinkedIn' },
+      { href: 'https://facebook.com/PaperboardSt', label: 'Facebook' },
+      //{ href: 'https://twitter.com', label: 'Twitter' },
+      { href: 'https://www.linkedin.com/company/paperboard-studio', label: 'LinkedIn' },
     ],
   },
   copyright: '2025. All rights reserved.',
