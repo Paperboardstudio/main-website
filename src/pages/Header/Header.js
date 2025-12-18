@@ -28,6 +28,26 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleAnchorClick = (e) => {
+    const href = e.currentTarget.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        const headerHeight = 80; // Approximate header height including padding
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
   return (
     <header className={`header ${scrollDirection === 'down' ? 'header--hidden' : ''}`}>
       <nav className="header__nav">
@@ -40,9 +60,9 @@ export const Header = () => {
 
         {}
         <div className="header__nav-right">
-          <a href="#services" className="header__nav-link">Services</a>
-          <a href="#portfolio" className="header__nav-link">Portfolio</a>
-          <a href="#contact" className="header__nav-link">Contact</a>
+          <a href="#services" className="header__nav-link" onClick={handleAnchorClick}>Services</a>
+          <a href="#portfolio" className="header__nav-link" onClick={handleAnchorClick}>Portfolio</a>
+          <a href="#contact" className="header__nav-link" onClick={handleAnchorClick}>Contact</a>
         </div>
       </nav>
     </header>
