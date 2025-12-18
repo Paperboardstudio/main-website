@@ -1,9 +1,9 @@
 @import '../../styles/variables';
 
 .header {
-  background-color: #fff;
+  background-color: #000000;
   padding: 1rem;
-  border-bottom: 1px solid $color-border;
+  //border-bottom: 1px solid $color-border;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -37,7 +37,7 @@
     align-items: center;
 
     img {
-      height: 50px; 
+      height: 35px; 
       width: auto;
       object-fit: contain;
       margin-top: 0px; 
@@ -52,14 +52,14 @@
 
   &__nav-link {
     text-decoration: none;
-    color: $color-text-primary;
+    color: #b0b0b0;
     font-size: $font-size-base;
     font-weight: bold;
     transition: color 0.3s ease;
 
     &:hover,
     &:focus {
-      color: $color-background-button-hover;
+      color: #ffffff;
     }
   }
 }
