@@ -7,15 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 const portfolioItems = [
   {
-    image: '/images/image1.webp', 
+    image: '/images/portfolio1.webp', 
     title: 'ClaritApp: Mobile POS',
   },
   {
-    image: '/images/image2.webp',
+    image: '/images/portfolio2.webp',
     title: 'Car Dealership AR',
   },
   {
-    image: '/images/image3.webp', 
+    image: '/images/portfolio3.webp', 
     title: 'Distant Paradise: Mobile game',
   },
 ];
