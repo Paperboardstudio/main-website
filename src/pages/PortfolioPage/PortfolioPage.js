@@ -7,15 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 const portfolioItems = [
   {
-    image: '/images/Image1.png', 
+    image: '/images/image1.webp', 
     title: 'ClaritApp: Mobile POS',
   },
   {
-    image: '/images/Image2.png',
+    image: '/images/image2.webp',
     title: 'Car Dealership AR',
   },
   {
-    image: '/images/Image3.png', 
+    image: '/images/image3.webp', 
     title: 'Distant Paradise: Mobile game',
   },
 ];
@@ -64,8 +64,9 @@ export const Portfolio = () => {
               src={item.image}
               alt={item.title}
               className="portfolio-highlights__image"
-              loading="lazy"
+              loading={index === 0 ? "eager" : "lazy"}
               decoding="async"
+              fetchpriority={index === 0 ? "high" : "auto"}
             />
             <h3 className="portfolio-highlights__item-title">{item.title}</h3>
           </div>
