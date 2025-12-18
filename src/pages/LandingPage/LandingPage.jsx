@@ -135,8 +135,15 @@ const BackgroundText = ({ text, position, size }) => {
 };
 
 const LandingCanvas = () => {
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <div style={{ position: 'relative', width: '100%', height: '200vh' }}>
+    <div 
+      style={{ position: 'relative', width: '100%', height: '200vh' }}
+      onContextMenu={handleContextMenu}
+    >
       <Canvas camera={{ position: [0, 0, 7], fov: 60 }} style={{ position: 'absolute', zIndex: 1, height: '100vh' }}>
         <ambientLight intensity={0.5} />
         {/* Scene background color */}
@@ -148,7 +155,7 @@ const LandingCanvas = () => {
         <BackgroundText text="S T U D I O" position={[-12.5, -1.15, -10]} size={1} />
         <GlassSphere />
         <RotatingPyramid />
-        <OrbitControls enableZoom={false} enableRotate={false} />
+        <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} enableDamping={false} />
       </Canvas>
     </div>
   );
