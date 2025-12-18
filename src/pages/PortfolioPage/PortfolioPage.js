@@ -22,34 +22,55 @@ const portfolioItems = [
 
 export const Portfolio = () => {
   useEffect(() => {
-    const items = gsap.utils.toArray('.portfolio-highlights__item');
-    const animations = items.map((item) => {
-      return gsap.fromTo(
-        item,
-        { opacity: 0, scale: 0.95 },
-        {
-          opacity: 1,
-          scale: 1,
-          ease: "power2.out",
-          duration: 1,
-          scrollTrigger: {
-            trigger: item,
-            start: "left center",
-            end: "right center",
-            toggleActions: "play none none reverse",
-            scroller: ".portfolio-highlights", 
-          },
-        }
-      );
-    });
+    let animations = [];
+    let timeoutId;
+
+    // Use requestAnimationFrame to ensure DOM is ready
+    const initAnimations = () => {
+      const items = gsap.utils.toArray('.portfolio-highlights__item');
+      if (items.length === 0) return;
+
+      animations = items.map((item) => {
+        return gsap.fromTo(
+          item,
+          { opacity: 0, scale: 0.95 },
+          {
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
+            duration: 1,
+            scrollTrigger: {
+              trigger: item,
+              start: "top 80%",
+              end: "bottom 20%",
+              toggleActions: "play none none none",
+              // Remove scroller option - use default window scroll
+            },
+          }
+        );
+      });
+
+      // Refresh ScrollTrigger after setup to recalculate positions
+      ScrollTrigger.refresh();
+    };
+
+    // Delay initialization slightly to ensure DOM is ready
+    timeoutId = setTimeout(() => {
+      requestAnimationFrame(initAnimations);
+    }, 100);
 
     return () => {
+      clearTimeout(timeoutId);
+      // Clean up all animations
       animations.forEach((anim) => {
-        if (anim.scrollTrigger) {
+        if (anim && anim.scrollTrigger) {
           anim.scrollTrigger.kill();
         }
-        anim.kill();
+        if (anim) {
+          anim.kill();
+        }
       });
+      animations = [];
     };
   }, []);
 
