@@ -11,9 +11,11 @@ export default function TransitionPage() {
         <Html
           style={{
             position: 'absolute',
-            top: '50%',
+            top: 'calc(50% + 40px)',
             left: '50%',
             transform: 'translate(-50%, -50%)',
+            zIndex: 0,
+            pointerEvents: 'none',
           }}
         >
           <div className="transition-message">
