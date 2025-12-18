@@ -52,11 +52,11 @@
   &__link {
     text-decoration: none;
     color: #fff;
-    transition: color 0.3s ease;
+    transition: text-decoration 0.3s ease;
 
     &:hover,
     &:focus {
-      color: $color-background-button-hover;
+      text-decoration: underline;
     }
   }
 
@@ -69,11 +69,11 @@
   &__social-link {
     text-decoration: none;
     color: #fff;
-    transition: color 0.3s ease;
+    transition: text-decoration 0.3s ease;
 
     &:hover,
     &:focus {
-      color: $color-background-button-hover;
+      text-decoration: underline;
     }
   }
 
