@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PortfolioPage.scss';
@@ -8,6 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 const Portfolio = () => {
   const sectionRef = useRef(null);
   const railRef = useRef(null);
+  const refreshTimeoutRef = useRef(null);
+  const imageLoadCountRef = useRef(0);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -32,6 +34,27 @@ const Portfolio = () => {
     ],
     []
   );
+
+  const totalImages = portfolioItems.length;
+
+  // Debounced ScrollTrigger refresh function
+  const debouncedRefresh = useCallback(() => {
+    if (refreshTimeoutRef.current) {
+      cancelAnimationFrame(refreshTimeoutRef.current);
+    }
+    refreshTimeoutRef.current = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      refreshTimeoutRef.current = null;
+    });
+  }, []);
+
+  // Track image loads and refresh once after all are loaded
+  const handleImageLoad = useCallback(() => {
+    imageLoadCountRef.current += 1;
+    if (imageLoadCountRef.current >= totalImages) {
+      debouncedRefresh();
+    }
+  }, [debouncedRefresh, totalImages]);
 
   useLayoutEffect(() => {
     if (!sectionRef.current) return;
@@ -62,9 +85,19 @@ const Portfolio = () => {
       });
     }, sectionRef);
 
-    ScrollTrigger.refresh();
-    return () => ctx.revert();
-  }, []);
+    // Refresh once after section mounts and cards are created
+    const timeoutId = setTimeout(() => {
+      debouncedRefresh();
+    }, 100);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(timeoutId);
+      if (refreshTimeoutRef.current) {
+        cancelAnimationFrame(refreshTimeoutRef.current);
+      }
+    };
+  }, [debouncedRefresh]);
 
   const updatePaddles = () => {
     const el = railRef.current;
@@ -140,7 +173,8 @@ const Portfolio = () => {
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  onLoad={() => ScrollTrigger.refresh()}
+                  onLoad={handleImageLoad}
+                  onError={handleImageLoad}
                 />
                 <div className="portfolio-tiles__overlay" />
               </div>

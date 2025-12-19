@@ -1,11 +1,11 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './ServicePage.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const ServiceCard = ({ title, technologies = [], image, imageAlt, index }) => {
+export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, onImageLoad }) => {
   const cardRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -41,23 +41,6 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index }
         },
       });
 
-      // If images load after ScrollTrigger measures positions, refresh again.
-      const imgEl = imgRef.current;
-      const refresh = () => ScrollTrigger.refresh();
-
-      if (imgEl) {
-        // If already loaded, refresh on next frame
-        if (imgEl.complete) {
-          requestAnimationFrame(refresh);
-        } else {
-          imgEl.addEventListener('load', refresh, { once: true });
-          imgEl.addEventListener('error', refresh, { once: true });
-        }
-      }
-
-      // Also refresh after the browser finishes layout
-      requestAnimationFrame(refresh);
-
       return () => {
         tween?.scrollTrigger?.kill();
         tween?.kill();
@@ -66,6 +49,12 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index }
 
     return () => ctx.revert();
   }, []);
+
+  const handleImageLoad = useCallback(() => {
+    if (onImageLoad) {
+      onImageLoad();
+    }
+  }, [onImageLoad]);
 
   return (
     <article className="service-card" ref={cardRef}>
@@ -78,9 +67,11 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index }
           alt={imageAlt || title}
           loading={index === 0 ? 'eager' : 'lazy'}
           decoding="async"
+          onLoad={handleImageLoad}
           onError={(e) => {
             // Optional: add a visible fallback state if the path is wrong at runtime
             e.currentTarget.dataset.broken = 'true';
+            handleImageLoad();
           }}
         />
       </div>
@@ -97,6 +88,31 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index }
 };
 
 export const Services = () => {
+  const sectionRef = useRef(null);
+  const refreshTimeoutRef = useRef(null);
+  const imageLoadCountRef = useRef(0);
+  const totalImagesRef = useRef(0);
+
+  // Debounced ScrollTrigger refresh function
+  const debouncedRefresh = useCallback(() => {
+    if (refreshTimeoutRef.current) {
+      cancelAnimationFrame(refreshTimeoutRef.current);
+    }
+    refreshTimeoutRef.current = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      refreshTimeoutRef.current = null;
+    });
+  }, []);
+
+  // Track image loads and refresh once after all are loaded
+  const handleImageLoad = useCallback(() => {
+    imageLoadCountRef.current += 1;
+    if (imageLoadCountRef.current >= totalImagesRef.current) {
+      // All images loaded, refresh once
+      debouncedRefresh();
+    }
+  }, [debouncedRefresh]);
+
   const services = useMemo(
     () => [
       {
@@ -121,8 +137,27 @@ export const Services = () => {
     []
   );
 
+  totalImagesRef.current = services.length;
+
+  // Refresh once after section mounts and cards are created
+  useLayoutEffect(() => {
+    if (!sectionRef.current) return;
+    
+    // Small delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      debouncedRefresh();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (refreshTimeoutRef.current) {
+        cancelAnimationFrame(refreshTimeoutRef.current);
+      }
+    };
+  }, [debouncedRefresh]);
+
   return (
-    <section className="services">
+    <section className="services" ref={sectionRef}>
       <span id="services" className="section-anchor" aria-hidden="true" />
       <h1 className="services__title">Our Services</h1>
 
@@ -135,6 +170,7 @@ export const Services = () => {
             image={service.image}
             technologies={service.technologies}
             imageAlt={service.imageAlt}
+            onImageLoad={handleImageLoad}
           />
         ))}
       </div>
