@@ -3,12 +3,11 @@
 .header {
   background-color: #000000;
   padding: 1rem;
-  //border-bottom: 1px solid $color-border;
   position: sticky;
   top: 0;
   z-index: 1000;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   transition: transform 0.3s ease-in-out;
   will-change: transform;
   transform: translateZ(0);
@@ -19,10 +18,10 @@
 
   &__nav {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px; 
+    max-width: 1200px;
     padding: 0 2rem;
   }
 
@@ -37,17 +36,17 @@
     align-items: center;
 
     img {
-      height: 35px; 
+      height: 35px;
       width: auto;
       object-fit: contain;
-      margin-top: 0px; 
+      margin-top: 0px;
     }
   }
 
   &__nav-right {
     display: flex;
     align-items: center;
-    gap: 2rem; 
+    gap: 2rem;
   }
 
   &__nav-link {

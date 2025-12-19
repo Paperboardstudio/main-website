@@ -109,7 +109,8 @@ const Portfolio = () => {
   return (
     <section className="portfolio-tiles" ref={sectionRef} aria-labelledby="portfolioTitle">
       <div className="portfolio-tiles__header">
-        <h2 className="portfolio-tiles__title" id="portfolioTitle">
+        <span id="portfolio" className="section-anchor" aria-hidden="true" />
+        <h2 className="portfolio-tiles__title">
           Our Portfolio
         </h2>
       </div>

@@ -123,6 +123,7 @@ export const Services = () => {
 
   return (
     <section className="services">
+      <span id="services" className="section-anchor" aria-hidden="true" />
       <h1 className="services__title">Our Services</h1>
 
       <div className="services__list">

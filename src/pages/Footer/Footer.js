@@ -26,7 +26,7 @@ const footerData = {
 
 export const Footer = () => {
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer section-anchor" id="contact">
       <div className="footer__container">
         <div className="footer__about">
           <h2 className="footer__title">{footerData.about.title}</h2>

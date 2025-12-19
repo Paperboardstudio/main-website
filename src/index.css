@@ -1,3 +1,15 @@
+/* Anchor sentinel configuration */
+:root {
+  --header-h: 80px;
+  --anchor-gap: 8px;
+}
+
+.section-anchor {
+  position: relative;
+  top: 0;
+  scroll-margin-top: calc(var(--header-h) + var(--anchor-gap));
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

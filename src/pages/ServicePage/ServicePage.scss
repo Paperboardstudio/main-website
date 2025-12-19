@@ -10,6 +10,15 @@
   // This is usually safe, but if you still see clipping, switch to visible.
   overflow: hidden;
 
+  .section-anchor {
+    position: absolute;
+    top: 1rem;
+    left: 5vw;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+
   &__title {
     position: absolute;
     top: 1rem;

@@ -10,10 +10,10 @@ import { GLTFModel } from '../ModelViewer/ModelViewer';
 export const MainPage = () => {
   return (
     <div className="main-page">   
-      <section className="main-page__services" id="services">
+      <section className="main-page__services">
         <Services />
       </section>
-      <section className="main-page__portfolio" id="portfolio">
+      <section className="main-page__portfolio">
         <Portfolio />
       </section>
       <Footer ></Footer>
