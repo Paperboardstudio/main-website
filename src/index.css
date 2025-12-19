@@ -1,7 +1,7 @@
 /* Anchor sentinel configuration */
 :root {
   --header-h: 80px;
-  --anchor-gap: 8px;
+  --anchor-gap: 20px;
 }
 
 .section-anchor {

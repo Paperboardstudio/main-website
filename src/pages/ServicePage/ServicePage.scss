@@ -4,15 +4,13 @@
   position: relative;
   padding: 6rem 2rem 4rem;
   background-color: #000;
-
-  // If you keep overflow hidden, animations can look cleaner,
-  // but it can also clip things depending on transforms.
-  // This is usually safe, but if you still see clipping, switch to visible.
   overflow: hidden;
+
+  --section-title-top: calc(var(--header-h) + var(--anchor-gap) + 1rem);
 
   .section-anchor {
     position: absolute;
-    top: 1rem;
+    top: var(--section-title-top);
     left: 5vw;
     height: 1px;
     width: 1px;
@@ -21,7 +19,7 @@
 
   &__title {
     position: absolute;
-    top: 1rem;
+    top: var(--section-title-top);
     left: 5vw;
     font-size: 4rem;
     font-weight: bold;
@@ -32,7 +30,7 @@
   }
 
   &__list {
-    margin-top: 4rem;
+    margin-top: 5rem;
     display: flex;
     flex-direction: column;
     gap: 5rem;
