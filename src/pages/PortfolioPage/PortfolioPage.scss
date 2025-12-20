@@ -47,6 +47,9 @@
 
     width: min(78vw, 430px);
     height: min(78vh, 560px);
+    @supports (height: 1svh) {
+      height: min(78svh, 560px);
+    }
 
     border-radius: 28px;
     overflow: hidden;
@@ -56,7 +59,7 @@
     transform: none;
 
     transition: transform 220ms ease, box-shadow 220ms ease;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    //box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 
     &:hover {
       transform: translateY(-6px);
