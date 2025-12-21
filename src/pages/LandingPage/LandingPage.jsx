@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text3D, Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -8,6 +8,22 @@ const _direction = new THREE.Vector3();
 const _panelPosition = new THREE.Vector3();
 const _pushDirection = new THREE.Vector3();
 const _targetPosition = new THREE.Vector3();
+
+// Hook to detect mobile devices
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
 
 const GlassPanel = ({ position, rotation }) => {
   const meshRef = useRef();
@@ -61,38 +77,52 @@ const GlassPanel = ({ position, rotation }) => {
   );
 };
 
-const GlassSphere = () => {
+const GlassSphere = ({ isMobile }) => {
   const groupRef = useRef();
-  const sphereRef = useRef(); // Add a ref for the sphere's position
+  const sphereRef = useRef();
 
   useFrame((state, delta) => {
-    groupRef.current.rotation.y += delta * 0.1; // Rotate the group
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.1;
+    }
   });
 
-  const panels = [];
-  const radius = 2;
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      const theta = (i / 9) * Math.PI;
-      const phi = (j / 10) * Math.PI * 2;
+  // Reduce panels on mobile for better performance (6x6=36 vs 10x10=100)
+  const gridSize = isMobile ? 6 : 10;
 
-      const x = radius * Math.sin(theta) * Math.cos(phi);
-      const y = radius * Math.cos(theta);
-      const z = radius * Math.sin(theta) * Math.sin(phi);
+  const panels = useMemo(() => {
+    const result = [];
+    const radius = 2;
 
-      const normal = new THREE.Vector3(x, y, z).normalize();
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const theta = (i / (gridSize - 1)) * Math.PI;
+        const phi = (j / gridSize) * Math.PI * 2;
 
-      const quaternion = new THREE.Quaternion();
-      quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
-      const euler = new THREE.Euler().setFromQuaternion(quaternion);
+        const x = radius * Math.sin(theta) * Math.cos(phi);
+        const y = radius * Math.cos(theta);
+        const z = radius * Math.sin(theta) * Math.sin(phi);
 
-      panels.push(<GlassPanel position={[x, y, z]} rotation={[euler.x, euler.y, euler.z]} key={`${i}-${j}`} />);
+        const normal = new THREE.Vector3(x, y, z).normalize();
+        const quaternion = new THREE.Quaternion();
+        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+        const euler = new THREE.Euler().setFromQuaternion(quaternion);
+
+        result.push(
+          <GlassPanel
+            position={[x, y, z]}
+            rotation={[euler.x, euler.y, euler.z]}
+            key={`${i}-${j}`}
+          />
+        );
+      }
     }
-  }
+    return result;
+  }, [gridSize]);
 
   return (
-    <group position={[5.95, 2.575, 0]} scale={[2.65, 2.65, 2.65]} ref={sphereRef}> {/* Position the sphere */}
-      <group ref={groupRef}> {/* Rotate this group */}
+    <group position={[5.95, 2.575, 0]} scale={[2.65, 2.65, 2.65]} ref={sphereRef}>
+      <group ref={groupRef}>
         {panels}
       </group>
     </group>
@@ -143,6 +173,7 @@ const BackgroundText = ({ text, position, size }) => {
 const LandingCanvas = () => {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -173,16 +204,16 @@ const LandingCanvas = () => {
         camera={{ position: [0, 0, 7], fov: 60 }}
         style={{ position: 'absolute', zIndex: 1, height: '100vh' }}
         frameloop={isVisible ? 'always' : 'never'}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.5} />
-        {/* Scene background color */}
         <color attach="background" args={["black"]} />
 
-        {/* Keep environment for reflections, but not as background */}
         <Environment preset="studio" />
         <BackgroundText text="P A P E R B O A R D" position={[-15.5, 1.15, -10]} size={1} />
         <BackgroundText text="S T U D I O" position={[-12.5, -1.15, -10]} size={1} />
-        <GlassSphere />
+        <GlassSphere isMobile={isMobile} />
         <RotatingPyramid />
         <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} enableDamping={false} />
       </Canvas>
