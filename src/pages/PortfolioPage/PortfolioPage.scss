@@ -56,12 +56,18 @@
     background: #111;
 
     opacity: 1;
+    transform: translateZ(0) scale(1);
+    transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform;
+
+    &:hover {
+      transform: translateZ(0) scale(1.03);
+      z-index: 2;
+    }
 
     @media (prefers-reduced-motion: reduce) {
-      .portfolio-tiles__media {
-        transition: none;
-      }
-      &:hover .portfolio-tiles__media {
+      transition: none;
+      &:hover {
         transform: none;
       }
     }
@@ -70,13 +76,6 @@
   &__media {
     position: absolute;
     inset: 0;
-    transform: translateZ(0) scale(1);
-    transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
-    will-change: transform;
-
-    .portfolio-tiles__card:hover & {
-      transform: translateZ(0) scale(1.03);
-    }
 
     img {
       width: 100%;
