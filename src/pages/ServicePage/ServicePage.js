@@ -138,16 +138,16 @@ export const Services = () => {
         imageAlt: 'Mobile development concepts',
       },
       {
-        title: 'Solid design solutions',
-        image: '/images/service2.webp',
-        technologies: ['Figma', 'After Effects', 'Illustrator', 'Blender', 'Cinema 4D'],
-        imageAlt: 'Design tools and artwork',
-      },
-      {
         title: 'Web development',
         image: '/images/service3.webp',
         technologies: ['React', 'Vue', 'Node.js', 'Webflow'],
         imageAlt: 'Web development environment',
+      },
+      {
+        title: 'Solid design solutions',
+        image: '/images/service2.webp',
+        technologies: ['Figma', 'After Effects', 'Illustrator', 'Blender', 'Cinema 4D'],
+        imageAlt: 'Design tools and artwork',
       },
     ],
     []
