@@ -64,10 +64,17 @@ const Portfolio = () => {
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray('.portfolio-tiles__card');
-      if (reduceMotion) return;
+    const cards = gsap.utils.toArray('.portfolio-tiles__card');
+    let hasAnimated = false;
 
+    // Always ensure cards are visible by default
+    gsap.set(cards, { opacity: 1, y: 0 });
+
+    if (reduceMotion) {
+      return () => {};
+    }
+
+    const ctx = gsap.context(() => {
       gsap.set(cards, { opacity: 0, y: 18 });
 
       gsap.to(cards, {
@@ -76,9 +83,10 @@ const Portfolio = () => {
         duration: 0.8,
         ease: 'power2.out',
         stagger: 0.08,
+        onComplete: () => { hasAnimated = true; },
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 95%',
           once: true,
           invalidateOnRefresh: true,
         },
@@ -90,9 +98,17 @@ const Portfolio = () => {
       debouncedRefresh();
     }, 100);
 
+    // Safety fallback: if animation hasn't run after 1.5s, force visibility
+    const fallbackTimer = setTimeout(() => {
+      if (!hasAnimated && cards.length > 0) {
+        gsap.set(cards, { opacity: 1, y: 0 });
+      }
+    }, 1500);
+
     return () => {
       ctx.revert();
       clearTimeout(timeoutId);
+      clearTimeout(fallbackTimer);
       if (refreshTimeoutRef.current) {
         cancelAnimationFrame(refreshTimeoutRef.current);
       }
@@ -173,6 +189,7 @@ const Portfolio = () => {
                   alt=""
                   loading="lazy"
                   decoding="async"
+                  sizes="(max-width: 768px) 85vw, 430px"
                   onLoad={handleImageLoad}
                   onError={handleImageLoad}
                 />

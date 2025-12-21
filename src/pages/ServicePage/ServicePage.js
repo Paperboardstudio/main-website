@@ -22,19 +22,23 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, 
 
     if (reduceMotion) return;
 
+    const card = cardRef.current;
+    let hasAnimated = false;
+
     const ctx = gsap.context(() => {
       // Start hidden ONLY for the animation, but ensure trigger will reliably fire
-      gsap.set(cardRef.current, { opacity: 0, y: 24 });
+      gsap.set(card, { opacity: 0, y: 24 });
 
-      const tween = gsap.to(cardRef.current, {
+      const tween = gsap.to(card, {
         opacity: 1,
         y: 0,
         duration: 0.8,
         ease: 'power2.out',
         overwrite: 'auto',
+        onComplete: () => { hasAnimated = true; },
         scrollTrigger: {
-          trigger: cardRef.current,
-          start: 'top 90%',
+          trigger: card,
+          start: 'top 95%',
           end: 'bottom 60%',
           once: true,
           invalidateOnRefresh: true,
@@ -45,9 +49,19 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, 
         tween?.scrollTrigger?.kill();
         tween?.kill();
       };
-    }, cardRef);
+    }, card);
 
-    return () => ctx.revert();
+    // Safety fallback: if animation hasn't run after 1.5s, force visibility
+    const fallbackTimer = setTimeout(() => {
+      if (!hasAnimated && card) {
+        gsap.set(card, { opacity: 1, y: 0 });
+      }
+    }, 1500);
+
+    return () => {
+      clearTimeout(fallbackTimer);
+      ctx.revert();
+    };
   }, []);
 
   const handleImageLoad = useCallback(() => {
@@ -66,7 +80,9 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, 
           src={image}
           alt={imageAlt || title}
           loading={index === 0 ? 'eager' : 'lazy'}
+          fetchPriority={index === 0 ? 'high' : 'auto'}
           decoding="async"
+          sizes="(max-width: 768px) 100vw, 900px"
           onLoad={handleImageLoad}
           onError={(e) => {
             // Optional: add a visible fallback state if the path is wrong at runtime
