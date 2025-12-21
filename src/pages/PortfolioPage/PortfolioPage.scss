@@ -61,7 +61,7 @@
     will-change: transform;
 
     &:hover {
-      transform: translateZ(0) scale(1.03);
+      transform: translateZ(0) scale(1.03) !important;
       z-index: 2;
     }
 
