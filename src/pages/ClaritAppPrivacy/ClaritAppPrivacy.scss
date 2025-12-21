@@ -1,0 +1,76 @@
+/* ClaritAppPrivacy.scss */
+.privacy-page {
+  min-height: 100vh;
+  background-color: #fff;
+  padding: 4rem 1.5rem;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 2.5rem 1rem;
+  }
+}
+
+.privacy-content {
+  max-width: 720px;
+  width: 100%;
+  color: #1a1a1a;
+  font-size: 1rem;
+  line-height: 1.7;
+
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin: 0 0 2rem;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    font-weight: 600;
+    margin: 2.5rem 0 1rem;
+    color: #000;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 1.25rem;
+  }
+
+  ul,
+  ol {
+    margin: 0 0 1.25rem;
+    padding-left: 1.5rem;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  a {
+    color: #0066cc;
+    text-decoration: underline;
+
+    &:hover {
+      color: #004499;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  // Keeping this class in case you still use it elsewhere,
+  // but it is NOT used by the policy content anymore.
+  .privacy-placeholder {
+    color: #666;
+    font-style: italic;
+  }
+}

@@ -1,13 +1,15 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 import LandingPage from './pages/LandingPage/LandingPage';
 import TransitionPage from './pages/TransitionPage/TransitionPage';
 import { Header } from './pages/Header/Header';
+import ClaritAppPrivacy from './pages/ClaritAppPrivacy/ClaritAppPrivacy';
 
 import { MainPage } from './pages';
 
-const App = () => {
+const HomePage = () => {
   return (
     <div className="app" style={{ overflow: 'auto', height: '100vh', scrollBehavior: 'smooth' }}>
       <Header />
@@ -26,6 +28,17 @@ const App = () => {
         <MainPage />
       </section>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/claritapp-privacy" element={<ClaritAppPrivacy />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
