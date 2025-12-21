@@ -58,7 +58,7 @@
     opacity: 1;
     transform: translateZ(0) scale(1);
     transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
-    will-change: transform;
+    contain: layout style paint;
 
     &:hover {
       transform: translateZ(0) scale(1.03) !important;
@@ -128,8 +128,7 @@
     height: 44px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(20, 20, 20, 0.75);
-    backdrop-filter: blur(10px);
+    background: rgba(20, 20, 20, 0.92);
     cursor: pointer;
 
     transition: opacity 160ms ease, transform 160ms ease;

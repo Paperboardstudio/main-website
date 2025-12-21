@@ -1,7 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text3D, Environment } from '@react-three/drei';
 import * as THREE from 'three';
+
+// Reusable vectors to avoid allocations in useFrame
+const _direction = new THREE.Vector3();
+const _panelPosition = new THREE.Vector3();
+const _pushDirection = new THREE.Vector3();
+const _targetPosition = new THREE.Vector3();
 
 const GlassPanel = ({ position, rotation }) => {
   const meshRef = useRef();
@@ -14,11 +20,10 @@ const GlassPanel = ({ position, rotation }) => {
     const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    const direction = new THREE.Vector3(mouseX, mouseY, 0).normalize();
-    const panelPosition = new THREE.Vector3().fromArray(position);
-
-    const pushDirection = new THREE.Vector3().subVectors(direction, panelPosition).normalize();
-    velocity.current.add(pushDirection.multiplyScalar(0.1));
+    _direction.set(mouseX, mouseY, 0).normalize();
+    _panelPosition.fromArray(position);
+    _pushDirection.subVectors(_direction, _panelPosition).normalize();
+    velocity.current.add(_pushDirection.multiplyScalar(0.1));
   };
 
   useFrame(() => {
@@ -30,7 +35,8 @@ const GlassPanel = ({ position, rotation }) => {
     velocity.current.multiplyScalar(0.9);
 
     // Magnetically return to the original position
-    mesh.position.lerp(new THREE.Vector3().fromArray(position), 0.05);
+    _targetPosition.fromArray(position);
+    mesh.position.lerp(_targetPosition, 0.05);
   });
 
   return (
@@ -135,16 +141,39 @@ const BackgroundText = ({ text, position, size }) => {
 };
 
 const LandingCanvas = () => {
+  const containerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: '100px' }
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
 
   return (
-    <div 
+    <div
+      ref={containerRef}
       style={{ position: 'relative', width: '100%', height: '200vh' }}
       onContextMenu={handleContextMenu}
     >
-      <Canvas camera={{ position: [0, 0, 7], fov: 60 }} style={{ position: 'absolute', zIndex: 1, height: '100vh' }}>
+      <Canvas
+        camera={{ position: [0, 0, 7], fov: 60 }}
+        style={{ position: 'absolute', zIndex: 1, height: '100vh' }}
+        frameloop={isVisible ? 'always' : 'never'}
+      >
         <ambientLight intensity={0.5} />
         {/* Scene background color */}
         <color attach="background" args={["black"]} />

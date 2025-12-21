@@ -47,12 +47,8 @@
   opacity: 1;
   transform: translateY(0);
 
-  // You can keep contain, but "content" can cause weird paint issues.
-  // "layout style" is safer than "content".
-  contain: layout style;
-
+  contain: layout style paint;
   min-height: 400px;
-  will-change: transform, opacity;
 
   &__title {
     // FIX: without this, your title can render black on black
