@@ -88,7 +88,11 @@
     transform: translateZ(0) scale(1);
     transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
     contain: layout style paint;
-    will-change: transform;
+
+    // Only use will-change on devices that support hover (not mobile)
+    @media (hover: hover) {
+      will-change: transform;
+    }
 
     &:hover {
       transform: translateZ(0) scale(1.025) !important;
