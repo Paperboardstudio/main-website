@@ -25,6 +25,23 @@ const useIsMobile = () => {
   return isMobile;
 };
 
+// Detect iOS devices (iPhone, iPad, iPod)
+const useIsIOS = () => {
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    const checkIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent) ||
+        (userAgent.includes('mac') && 'ontouchend' in document);
+      setIsIOS(isIOSDevice);
+    };
+    checkIOS();
+  }, []);
+
+  return isIOS;
+};
+
 const GlassPanel = ({ position, rotation }) => {
   const meshRef = useRef();
   const velocity = useRef(new THREE.Vector3());
@@ -174,6 +191,7 @@ const LandingCanvas = () => {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
   const isMobile = useIsMobile();
+  const isIOS = useIsIOS();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -193,6 +211,45 @@ const LandingCanvas = () => {
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
+
+  // Show static fallback on iOS to prevent crashes from WebGL memory limits
+  if (isIOS) {
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '200vh',
+          background: 'black',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            fontFamily: 'serif',
+            letterSpacing: '0.3em',
+          }}
+        >
+          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)', marginBottom: '0.5rem' }}>
+            P A P E R B O A R D
+          </div>
+          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
+            S T U D I O
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
