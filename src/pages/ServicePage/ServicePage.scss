@@ -93,8 +93,6 @@
       height: auto;
       display: block;
       object-fit: cover;
-      transform: translateZ(0);
-      backface-visibility: hidden;
 
       &[data-broken='true'] {
         min-height: 200px;
