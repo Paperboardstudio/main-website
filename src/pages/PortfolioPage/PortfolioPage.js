@@ -181,13 +181,14 @@ const Portfolio = () => {
         />
 
         <div className="portfolio-tiles__rail" ref={railRef}>
-          {portfolioItems.map((item) => (
+          {portfolioItems.map((item, index) => (
             <article className="portfolio-tiles__card" key={item.title}>
               <div className="portfolio-tiles__media" aria-hidden="true">
                 <img
                   src={item.image}
                   alt=""
-                  loading="eager"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
                   decoding="async"
                   sizes="(max-width: 768px) 85vw, 430px"
                   onLoad={handleImageLoad}

@@ -55,11 +55,15 @@
   opacity: 1;
   transform: translateY(0);
 
+  // CSS containment for better scroll performance
   contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
   min-height: 300px;
 
   @media (max-width: 768px) {
     min-height: 250px;
+    contain-intrinsic-size: 0 400px;
   }
 
   &__title {

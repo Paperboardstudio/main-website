@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text3D, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -8,6 +8,30 @@ const _direction = new THREE.Vector3();
 const _panelPosition = new THREE.Vector3();
 const _pushDirection = new THREE.Vector3();
 const _targetPosition = new THREE.Vector3();
+
+// Early iOS detection (synchronous, no useState flicker)
+const isIOSDevice = () => {
+  if (typeof window === 'undefined') return false;
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(userAgent) ||
+    (userAgent.includes('mac') && 'ontouchend' in document);
+};
+
+// Memory cleanup utility for Three.js
+const disposeObject = (obj) => {
+  if (!obj) return;
+  if (obj.geometry) obj.geometry.dispose();
+  if (obj.material) {
+    if (Array.isArray(obj.material)) {
+      obj.material.forEach(m => m.dispose());
+    } else {
+      obj.material.dispose();
+    }
+  }
+  if (obj.children) {
+    obj.children.forEach(child => disposeObject(child));
+  }
+};
 
 // Hook to detect mobile devices
 const useIsMobile = () => {
@@ -25,22 +49,6 @@ const useIsMobile = () => {
   return isMobile;
 };
 
-// Detect iOS devices (iPhone, iPad, iPod)
-const useIsIOS = () => {
-  const [isIOS, setIsIOS] = useState(false);
-
-  useEffect(() => {
-    const checkIOS = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent) ||
-        (userAgent.includes('mac') && 'ontouchend' in document);
-      setIsIOS(isIOSDevice);
-    };
-    checkIOS();
-  }, []);
-
-  return isIOS;
-};
 
 const GlassPanel = ({ position, rotation }) => {
   const meshRef = useRef();
@@ -97,11 +105,20 @@ const GlassPanel = ({ position, rotation }) => {
 const GlassSphere = ({ isMobile }) => {
   const groupRef = useRef();
   const sphereRef = useRef();
+  const lastFrameTime = useRef(0);
 
+  // Frame rate limiting for mobile (target 30fps instead of 60fps)
   useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.1;
+    if (!groupRef.current) return;
+
+    if (isMobile) {
+      // Throttle to ~30fps on mobile to reduce GPU load
+      lastFrameTime.current += delta;
+      if (lastFrameTime.current < 0.033) return;
+      lastFrameTime.current = 0;
     }
+
+    groupRef.current.rotation.y += delta * 0.1;
   });
 
   // Reduce panels on mobile for better performance (6x6=36 vs 10x10=100)
@@ -204,11 +221,31 @@ const BackgroundText = ({ text, position, size, isMobile }) => {
   );
 };
 
+// Component to handle Three.js cleanup on unmount
+const SceneCleanup = () => {
+  const { gl, scene } = useThree();
+
+  useEffect(() => {
+    return () => {
+      // Dispose scene objects
+      scene.traverse((object) => {
+        disposeObject(object);
+      });
+      // Clear renderer state
+      gl.dispose();
+    };
+  }, [gl, scene]);
+
+  return null;
+};
+
 const LandingCanvas = () => {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
   const isMobile = useIsMobile();
-  const isIOS = useIsIOS();
+
+  // Use synchronous check for iOS to prevent canvas mount/unmount flicker
+  const [isIOS] = useState(() => isIOSDevice());
 
   useEffect(() => {
     const container = containerRef.current;
@@ -225,12 +262,40 @@ const LandingCanvas = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleContextMenu = (e) => {
+  const handleContextMenu = useCallback((e) => {
     e.preventDefault();
-  };
+  }, []);
 
   // Check if touch device (mobile or iOS)
   const isTouchDevice = isMobile || isIOS;
+
+  // iOS: render static fallback immediately (no WebGL)
+  if (isIOS) {
+    return (
+      <div
+        ref={containerRef}
+        style={{ position: 'relative', width: '100%', height: '100vh', overflowX: 'hidden', background: 'black' }}
+        onContextMenu={handleContextMenu}
+      >
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+          color: 'white',
+          fontFamily: 'serif',
+        }}>
+          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)', letterSpacing: '0.3em', marginBottom: '0.5rem' }}>
+            P A P E R B O A R D
+          </div>
+          <div style={{ fontSize: 'clamp(1.2rem, 4vw, 2.5rem)', letterSpacing: '0.3em' }}>
+            S T U D I O
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -250,7 +315,12 @@ const LandingCanvas = () => {
         frameloop={isVisible ? 'always' : 'never'}
         dpr={isTouchDevice ? [1, 1.5] : [1, 2]}
         performance={{ min: 0.5 }}
+        gl={{
+          powerPreference: 'high-performance',
+          antialias: !isTouchDevice,
+        }}
       >
+        <SceneCleanup />
         <ambientLight intensity={0.5} />
         <color attach="background" args={["black"]} />
 
