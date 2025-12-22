@@ -1,15 +1,68 @@
-import React, { useLayoutEffect, useMemo, useRef, useState, useCallback } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState, useCallback, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PortfolioPage.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Detect iOS for more aggressive lazy loading
+const isIOSDevice = () => {
+  if (typeof window === 'undefined') return false;
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(userAgent) ||
+    (userAgent.includes('mac') && 'ontouchend' in document);
+};
+
+// Lazy image component that only loads when visible (for iOS memory optimization)
+const LazyImage = ({ src, alt, sizes, onLoad, onError, isIOS }) => {
+  const imgRef = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(!isIOS); // Load immediately on non-iOS
+
+  useEffect(() => {
+    if (!isIOS || shouldLoad) return;
+
+    const img = imgRef.current;
+    if (!img) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+
+    observer.observe(img);
+    return () => observer.disconnect();
+  }, [isIOS, shouldLoad]);
+
+  return (
+    <img
+      ref={imgRef}
+      src={shouldLoad ? src : undefined}
+      data-src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      sizes={sizes}
+      onLoad={onLoad}
+      onError={onError}
+      style={{
+        backgroundColor: '#111',
+        minHeight: shouldLoad ? undefined : '100%',
+      }}
+    />
+  );
+};
+
 const Portfolio = () => {
   const sectionRef = useRef(null);
   const railRef = useRef(null);
   const refreshTimeoutRef = useRef(null);
   const imageLoadCountRef = useRef(0);
+  const isIOS = useMemo(() => isIOSDevice(), []);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -184,15 +237,13 @@ const Portfolio = () => {
           {portfolioItems.map((item, index) => (
             <article className="portfolio-tiles__card" key={item.title}>
               <div className="portfolio-tiles__media" aria-hidden="true">
-                <img
+                <LazyImage
                   src={item.image}
                   alt=""
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={index === 0 ? 'high' : 'auto'}
-                  decoding="async"
                   sizes="(max-width: 768px) 85vw, 430px"
                   onLoad={handleImageLoad}
                   onError={handleImageLoad}
+                  isIOS={isIOS}
                 />
                 <div className="portfolio-tiles__overlay" />
               </div>
