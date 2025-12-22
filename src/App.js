@@ -11,7 +11,7 @@ import { MainPage } from './pages';
 
 const HomePage = () => {
   return (
-    <div className="app" style={{ overflow: 'auto', height: '100vh', scrollBehavior: 'smooth' }}>
+    <div className="app" style={{ overflow: 'auto', overflowX: 'hidden', height: '100vh', scrollBehavior: 'smooth' }}>
       <Header />
       {}
       <section style={{ height: '100vh' }} id="home" className="section-anchor">

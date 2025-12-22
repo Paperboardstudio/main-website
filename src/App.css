@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile section height adjustments */
+@media (max-width: 768px) {
+  .app > section:nth-child(3) {
+    height: auto !important;
+    min-height: 0vh;
+  }
+
+  .app > section:nth-child(4) {
+    height: auto !important;
+  }
+}

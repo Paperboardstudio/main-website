@@ -80,13 +80,13 @@ const Portfolio = () => {
       gsap.to(cards, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 0.6,
         ease: 'power2.out',
-        stagger: 0.08,
+        stagger: 0.06,
         onComplete: () => { hasAnimated = true; },
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 95%',
+          start: 'top 100%',
           once: true,
           invalidateOnRefresh: true,
         },
@@ -98,12 +98,12 @@ const Portfolio = () => {
       debouncedRefresh();
     }, 100);
 
-    // Safety fallback: if animation hasn't run after 1.5s, force visibility
+    // Safety fallback: if animation hasn't run after 800ms, force visibility
     const fallbackTimer = setTimeout(() => {
       if (!hasAnimated && cards.length > 0) {
         gsap.set(cards, { opacity: 1, y: 0 });
       }
-    }, 1500);
+    }, 800);
 
     return () => {
       ctx.revert();
@@ -187,7 +187,7 @@ const Portfolio = () => {
                 <img
                   src={item.image}
                   alt=""
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                   sizes="(max-width: 768px) 85vw, 430px"
                   onLoad={handleImageLoad}

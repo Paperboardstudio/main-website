@@ -8,6 +8,11 @@
   overflow: hidden;
   z-index: 0;
 
+  @media (max-width: 768px) {
+    height: 0vh;
+    min-height: 200px;
+  }
+
   .canvas {
     width: 100%;
     height: 100%;
@@ -28,6 +33,13 @@
 
     @media (max-width: 768px) {
       width: 85vw;
+    }
+  }
+
+  // iOS fallback positioning adjustment
+  > div:not(.canvas) {
+    @media (max-width: 768px) {
+      top: 47.5% !important;
     }
   }
 }

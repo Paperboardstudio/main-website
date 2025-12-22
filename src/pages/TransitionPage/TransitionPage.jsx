@@ -20,10 +20,28 @@ const useIsIOS = () => {
   return isIOS;
 };
 
+// Hook to detect mobile devices
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 export default function TransitionPage() {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
   const isIOS = useIsIOS();
+  const isMobile = useIsMobile();
+  const isTouchDevice = isMobile || isIOS;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -47,7 +65,7 @@ export default function TransitionPage() {
         <div
           style={{
             position: 'absolute',
-            top: 'calc(50% + 40px)',
+            top: isTouchDevice ? '35%' : 'calc(50% + 40px)',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '100%',
@@ -68,13 +86,14 @@ export default function TransitionPage() {
       <Canvas
         gl={{ antialias: false }}
         className="canvas"
+        style={{ touchAction: 'pan-y' }}
         frameloop={isVisible ? 'always' : 'never'}
       >
         <Preload />
         <Html
           style={{
             position: 'absolute',
-            top: 'calc(50% + 40px)',
+            top: isTouchDevice ? '35%' : 'calc(50% + 40px)',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: 0,

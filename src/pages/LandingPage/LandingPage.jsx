@@ -137,8 +137,12 @@ const GlassSphere = ({ isMobile }) => {
     return result;
   }, [gridSize]);
 
+  // Adjust position and scale for mobile viewport
+  const position = isMobile ? [0, 2.5, 0] : [5.95, 2.575, 0];
+  const scale = isMobile ? 1.8 : 2.65;
+
   return (
-    <group position={[5.95, 2.575, 0]} scale={[2.65, 2.65, 2.65]} ref={sphereRef}>
+    <group position={position} scale={[scale, scale, scale]} ref={sphereRef}>
       <group ref={groupRef}>
         {panels}
       </group>
@@ -146,13 +150,18 @@ const GlassSphere = ({ isMobile }) => {
   );
 };
 
-const RotatingPyramid = () => {
+const RotatingPyramid = ({ isMobile }) => {
   const pyramidRef = useRef();
   const time = useRef(0);
 
+  // Adjust position and scale for mobile viewport
+  const baseY = isMobile ? 1.5 : 0.8;
+  const position = isMobile ? [0, baseY, 0] : [5, baseY, 0];
+  const scale = isMobile ? 1.8 : 2.5;
+
   useFrame((state, delta) => {
     time.current += delta;
-    pyramidRef.current.position.y = 0.5 + Math.sin(time.current * 0.5) * 0.2; // Calmer up-and-down movement
+    pyramidRef.current.position.y = baseY + Math.sin(time.current * 0.5) * 0.2; // Calmer up-and-down movement
 
     if (Math.floor(time.current) % 4 === 0) {
       pyramidRef.current.material.emissiveIntensity = 10; // Radiate glow periodically
@@ -162,7 +171,7 @@ const RotatingPyramid = () => {
   });
 
   return (
-    <mesh ref={pyramidRef} position={[5, 0.8, 0]} scale={[2.5, 2.5, 2.5]}>
+    <mesh ref={pyramidRef} position={position} scale={[scale, scale, scale]}>
       <coneGeometry args={[0.5, 1, 4]} />
       <meshStandardMaterial color="hotpink" emissive="pink" toneMapped={false} />
       <pointLight position={[-1, 0.8, 0]} intensity={8} distance={15} decay={2} />
@@ -170,13 +179,21 @@ const RotatingPyramid = () => {
   );
 };
 
-const BackgroundText = ({ text, position, size }) => {
-  const finalPosition = [position[0], position[1], position[2]];
+const BackgroundText = ({ text, position, size, isMobile }) => {
+  // On mobile: half size, centered, lower position
+  const mobileSize = size * 0.45;
+  const finalSize = isMobile ? mobileSize : size;
+
+  // Adjust position for mobile - centered (x near 0) and positioned lower on screen
+  const finalPosition = isMobile
+    ? [text === 'P A P E R B O A R D' ? -3.6 : -2, text === 'P A P E R B O A R D' ? -6.25 : -7.5, position[2]]
+    : [position[0], position[1], position[2]];
+
   return (
     <Text3D
       position={finalPosition}
       font="/Libre_Bodoni_Medium_Regular.json"
-      size={size + 0.15}
+      size={finalSize + 0.15}
       height={0.125}
       curveSegments={12}
       bevelEnabled={false}
@@ -212,67 +229,39 @@ const LandingCanvas = () => {
     e.preventDefault();
   };
 
-  // Show static fallback on iOS to prevent crashes from WebGL memory limits
-  if (isIOS) {
-    return (
-      <div
-        ref={containerRef}
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '200vh',
-          background: 'black',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'white',
-            fontFamily: 'serif',
-            letterSpacing: '0.3em',
-          }}
-        >
-          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)', marginBottom: '0.5rem' }}>
-            P A P E R B O A R D
-          </div>
-          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
-            S T U D I O
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Check if touch device (mobile or iOS)
+  const isTouchDevice = isMobile || isIOS;
 
   return (
     <div
       ref={containerRef}
-      style={{ position: 'relative', width: '100%', height: '200vh' }}
+      style={{ position: 'relative', width: '100%', height: isTouchDevice ? '100vh' : '200vh', overflowX: 'hidden' }}
       onContextMenu={handleContextMenu}
     >
       <Canvas
         camera={{ position: [0, 0, 7], fov: 60 }}
-        style={{ position: 'absolute', zIndex: 1, height: '100vh' }}
+        style={{
+          position: 'absolute',
+          zIndex: 1,
+          height: '100vh',
+          touchAction: 'pan-y',
+          pointerEvents: isTouchDevice ? 'none' : 'auto',
+        }}
         frameloop={isVisible ? 'always' : 'never'}
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        dpr={isTouchDevice ? [1, 1.5] : [1, 2]}
         performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.5} />
         <color attach="background" args={["black"]} />
 
         <Environment preset="studio" />
-        <BackgroundText text="P A P E R B O A R D" position={[-15.5, 1.15, -10]} size={1} />
-        <BackgroundText text="S T U D I O" position={[-12.5, -1.15, -10]} size={1} />
-        <GlassSphere isMobile={isMobile} />
-        <RotatingPyramid />
-        <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} enableDamping={false} />
+        <BackgroundText text="P A P E R B O A R D" position={[-15.5, 1.15, -10]} size={1} isMobile={isTouchDevice} />
+        <BackgroundText text="S T U D I O" position={[-12.5, -1.15, -10]} size={1} isMobile={isTouchDevice} />
+        <GlassSphere isMobile={isTouchDevice} />
+        <RotatingPyramid isMobile={isTouchDevice} />
+        {!isTouchDevice && (
+          <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} enableDamping={false} />
+        )}
       </Canvas>
     </div>
   );
