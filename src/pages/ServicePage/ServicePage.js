@@ -1,69 +1,10 @@
-import React, { useLayoutEffect, useMemo, useRef, useCallback } from 'react';
-import gsap from 'gsap';
+import React, { useMemo, useRef, useCallback, useEffect } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { BlurUpImage } from '../../components/BlurUpImage';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import './ServicePage.scss';
 
-gsap.registerPlugin(ScrollTrigger);
-
-export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, onImageLoad }) => {
-  const cardRef = useRef(null);
-  const imgRef = useRef(null);
-
-  useLayoutEffect(() => {
-    if (!cardRef.current) return;
-
-    const reduceMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Always make sure the card is visible by default (prevents "nothing shows" scenarios)
-    gsap.set(cardRef.current, { opacity: 1, y: 0 });
-
-    if (reduceMotion) return;
-
-    const card = cardRef.current;
-    let hasAnimated = false;
-
-    const ctx = gsap.context(() => {
-      // Start hidden ONLY for the animation, but ensure trigger will reliably fire
-      gsap.set(card, { opacity: 0, y: 24 });
-
-      const tween = gsap.to(card, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        overwrite: 'auto',
-        onComplete: () => { hasAnimated = true; },
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 95%',
-          end: 'bottom 60%',
-          once: true,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      return () => {
-        tween?.scrollTrigger?.kill();
-        tween?.kill();
-      };
-    }, card);
-
-    // Safety fallback: if animation hasn't run after 1.5s, force visibility
-    const fallbackTimer = setTimeout(() => {
-      if (!hasAnimated && card) {
-        gsap.set(card, { opacity: 1, y: 0 });
-      }
-    }, 1500);
-
-    return () => {
-      clearTimeout(fallbackTimer);
-      ctx.revert();
-    };
-  }, []);
-
+export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, onImageLoad, aspectRatio = 1.78 }) => {
   const handleImageLoad = useCallback(() => {
     if (onImageLoad) {
       onImageLoad();
@@ -71,24 +12,26 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, 
   }, [onImageLoad]);
 
   return (
-    <article className="service-card" ref={cardRef}>
+    <ScrollReveal
+      as="article"
+      className="service-card"
+      y={40}
+      duration={0.7}
+      delay={index * 0.1} // Stagger effect
+      start="top 88%"
+    >
       <h2 className="service-card__title">{title}</h2>
 
       <div className="service-card__image">
-        <img
-          ref={imgRef}
+        <BlurUpImage
           src={image}
           alt={imageAlt || title}
+          aspectRatio={aspectRatio}
           loading={index === 0 ? 'eager' : 'lazy'}
           fetchPriority={index === 0 ? 'high' : 'auto'}
-          decoding="async"
           sizes="(max-width: 768px) 100vw, 900px"
           onLoad={handleImageLoad}
-          onError={(e) => {
-            // Optional: add a visible fallback state if the path is wrong at runtime
-            e.currentTarget.dataset.broken = 'true';
-            handleImageLoad();
-          }}
+          onError={handleImageLoad}
         />
       </div>
 
@@ -99,7 +42,7 @@ export const ServiceCard = ({ title, technologies = [], image, imageAlt, index, 
           </li>
         ))}
       </ul>
-    </article>
+    </ScrollReveal>
   );
 };
 
@@ -124,7 +67,6 @@ export const Services = () => {
   const handleImageLoad = useCallback(() => {
     imageLoadCountRef.current += 1;
     if (imageLoadCountRef.current >= totalImagesRef.current) {
-      // All images loaded, refresh once
       debouncedRefresh();
     }
   }, [debouncedRefresh]);
@@ -155,14 +97,13 @@ export const Services = () => {
 
   totalImagesRef.current = services.length;
 
-  // Refresh once after section mounts and cards are created
-  useLayoutEffect(() => {
+  // Refresh ScrollTrigger after content loads
+  useEffect(() => {
     if (!sectionRef.current) return;
-    
-    // Small delay to ensure DOM is ready
+
     const timeoutId = setTimeout(() => {
       debouncedRefresh();
-    }, 100);
+    }, 150);
 
     return () => {
       clearTimeout(timeoutId);
@@ -175,7 +116,9 @@ export const Services = () => {
   return (
     <section className="services" ref={sectionRef}>
       <span id="services" className="section-anchor" aria-hidden="true" />
-      <h1 className="services__title">Our Services</h1>
+      <ScrollReveal as="h1" className="services__title" y={25} duration={0.6} start="top 92%">
+        Our Services
+      </ScrollReveal>
 
       <div className="services__list">
         {services.map((service, index) => (

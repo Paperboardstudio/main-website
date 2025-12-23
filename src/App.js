@@ -1,8 +1,13 @@
-import React, { Suspense, lazy, useRef, useState, useEffect, useMemo } from 'react';
+import React, { Suspense, lazy, useRef, useState, useEffect, useMemo, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './App.css';
 
 import { Header } from './pages/Header/Header';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Early iOS detection (synchronous)
 const isIOSDevice = () => {
@@ -11,6 +16,10 @@ const isIOSDevice = () => {
   return /iphone|ipad|ipod/.test(userAgent) ||
     (userAgent.includes('mac') && 'ontouchend' in document);
 };
+
+// Lenis context for smooth scroll
+const LenisContext = createContext(null);
+export const useLenis = () => useContext(LenisContext);
 
 // Lazy load heavy components for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage/LandingPage'));
@@ -96,39 +105,98 @@ const UnmountableSection = ({ children, height = '100vh', fallback }) => {
 };
 
 const HomePage = () => {
+  const [lenis, setLenis] = useState(null);
+  const isIOS = useMemo(() => isIOSDevice(), []);
+
+  // Initialize Lenis smooth scroll on document body (disabled on iOS for performance)
+  useEffect(() => {
+    if (isIOS) return;
+
+    // Lightweight Lenis config for better performance
+    const lenisInstance = new Lenis({
+      duration: 1.0, // Shorter duration = less processing
+      easing: (t) => 1 - Math.pow(1 - t, 3), // Simpler cubic ease-out
+      orientation: 'vertical',
+      smoothWheel: true,
+      smoothTouch: false,
+      wheelMultiplier: 1, // Default multiplier
+      lerp: 0.1, // Linear interpolation factor (0.1 = smooth, 1 = instant)
+    });
+
+    // Throttled ScrollTrigger update (every 2nd frame for performance)
+    let frameCount = 0;
+    const throttledUpdate = () => {
+      frameCount++;
+      if (frameCount % 2 === 0) {
+        ScrollTrigger.update();
+      }
+    };
+    lenisInstance.on('scroll', throttledUpdate);
+
+    // Use requestAnimationFrame directly (lighter than GSAP ticker)
+    let rafId;
+    const raf = (time) => {
+      lenisInstance.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    setLenis(lenisInstance);
+
+    // Single delayed refresh
+    const refreshTimeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+
+    return () => {
+      clearTimeout(refreshTimeout);
+      cancelAnimationFrame(rafId);
+      lenisInstance.destroy();
+    };
+  }, [isIOS]);
+
   return (
-    <div className="app" style={{ overflow: 'auto', overflowX: 'hidden', height: '100vh', scrollBehavior: 'smooth' }}>
-      <Header />
+    <LenisContext.Provider value={lenis}>
+      <div
+        className="app"
+        style={{
+          minHeight: '100vh',
+          // Use native smooth scroll on iOS
+          scrollBehavior: isIOS ? 'smooth' : 'auto'
+        }}
+      >
+        <Header />
 
-      {/* Landing section - unmounts on iOS when scrolled past to free GPU memory */}
-      <UnmountableSection height="100vh">
-        <section style={{ height: '100vh' }} id="home" className="section-anchor">
-          <Suspense fallback={<SectionFallback />}>
-            <LandingPage />
-          </Suspense>
-        </section>
-      </UnmountableSection>
-
-      {/* Transition section - lazy load when approaching, unmounts when scrolled past */}
-      <UnmountableSection height="100vh">
-        <LazySection height="100vh" rootMargin="300px" iosRootMargin="100px">
-          <section style={{ height: '100vh' }}>
+        {/* Landing section - unmounts on iOS when scrolled past to free GPU memory */}
+        <UnmountableSection height="100vh">
+          <section style={{ height: '100vh' }} id="home" className="section-anchor">
             <Suspense fallback={<SectionFallback />}>
-              <TransitionPage />
+              <LandingPage />
+            </Suspense>
+          </section>
+        </UnmountableSection>
+
+        {/* Transition section - lazy load when approaching, unmounts when scrolled past */}
+        <UnmountableSection height="100vh">
+          <LazySection height="100vh" rootMargin="300px" iosRootMargin="100px">
+            <section style={{ height: '100vh' }}>
+              <Suspense fallback={<SectionFallback />}>
+                <TransitionPage />
+              </Suspense>
+            </section>
+          </LazySection>
+        </UnmountableSection>
+
+        {/* Main section (Services + Portfolio) - lazy load when approaching */}
+        <LazySection height="100vh" rootMargin="400px" iosRootMargin="150px">
+          <section style={{ minHeight: '100vh' }}>
+            <Suspense fallback={<SectionFallback />}>
+              <MainPage />
             </Suspense>
           </section>
         </LazySection>
-      </UnmountableSection>
-
-      {/* Main section (Services + Portfolio) - lazy load when approaching */}
-      <LazySection height="100vh" rootMargin="400px" iosRootMargin="150px">
-        <section style={{ minHeight: '100vh' }}>
-          <Suspense fallback={<SectionFallback />}>
-            <MainPage />
-          </Suspense>
-        </section>
-      </LazySection>
-    </div>
+      </div>
+    </LenisContext.Provider>
   );
 };
 

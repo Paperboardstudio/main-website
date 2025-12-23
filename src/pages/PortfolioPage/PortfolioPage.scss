@@ -86,7 +86,8 @@
 
     opacity: 1;
     transform: translateZ(0) scale(1);
-    transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    // Apple-style easing: smooth deceleration with slight overshoot feel
+    transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     // CSS containment for better scroll performance
     contain: layout style paint;
@@ -185,7 +186,8 @@
     background: rgba(20, 20, 20, 0.92);
     cursor: pointer;
 
-    transition: opacity 160ms ease, transform 160ms ease;
+    transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     opacity: 1;
 
     &::before {

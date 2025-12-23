@@ -1,68 +1,14 @@
-import React, { useLayoutEffect, useMemo, useRef, useState, useCallback, useEffect } from 'react';
-import gsap from 'gsap';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { BlurUpImage } from '../../components/BlurUpImage';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import './PortfolioPage.scss';
-
-gsap.registerPlugin(ScrollTrigger);
-
-// Detect iOS for more aggressive lazy loading
-const isIOSDevice = () => {
-  if (typeof window === 'undefined') return false;
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent) ||
-    (userAgent.includes('mac') && 'ontouchend' in document);
-};
-
-// Lazy image component that only loads when visible (for iOS memory optimization)
-const LazyImage = ({ src, alt, sizes, onLoad, onError, isIOS }) => {
-  const imgRef = useRef(null);
-  const [shouldLoad, setShouldLoad] = useState(!isIOS); // Load immediately on non-iOS
-
-  useEffect(() => {
-    if (!isIOS || shouldLoad) return;
-
-    const img = imgRef.current;
-    if (!img) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '100px', threshold: 0 }
-    );
-
-    observer.observe(img);
-    return () => observer.disconnect();
-  }, [isIOS, shouldLoad]);
-
-  return (
-    <img
-      ref={imgRef}
-      src={shouldLoad ? src : undefined}
-      data-src={src}
-      alt={alt}
-      loading="lazy"
-      decoding="async"
-      sizes={sizes}
-      onLoad={onLoad}
-      onError={onError}
-      style={{
-        backgroundColor: '#111',
-        minHeight: shouldLoad ? undefined : '100%',
-      }}
-    />
-  );
-};
 
 const Portfolio = () => {
   const sectionRef = useRef(null);
   const railRef = useRef(null);
   const refreshTimeoutRef = useRef(null);
   const imageLoadCountRef = useRef(0);
-  const isIOS = useMemo(() => isIOSDevice(), []);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -109,93 +55,47 @@ const Portfolio = () => {
     }
   }, [debouncedRefresh, totalImages]);
 
-  useLayoutEffect(() => {
-    if (!sectionRef.current) return;
-
-    const reduceMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const cards = gsap.utils.toArray('.portfolio-tiles__card');
-    let hasAnimated = false;
-
-    // Always ensure cards are visible by default
-    gsap.set(cards, { opacity: 1, y: 0 });
-
-    if (reduceMotion) {
-      return () => {};
-    }
-
-    const ctx = gsap.context(() => {
-      gsap.set(cards, { opacity: 0, y: 18 });
-
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.06,
-        onComplete: () => { hasAnimated = true; },
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 100%',
-          once: true,
-          invalidateOnRefresh: true,
-        },
-      });
-    }, sectionRef);
-
-    // Refresh once after section mounts and cards are created
-    const timeoutId = setTimeout(() => {
-      debouncedRefresh();
-    }, 100);
-
-    // Safety fallback: if animation hasn't run after 800ms, force visibility
-    const fallbackTimer = setTimeout(() => {
-      if (!hasAnimated && cards.length > 0) {
-        gsap.set(cards, { opacity: 1, y: 0 });
-      }
-    }, 800);
-
-    return () => {
-      ctx.revert();
-      clearTimeout(timeoutId);
-      clearTimeout(fallbackTimer);
-      if (refreshTimeoutRef.current) {
-        cancelAnimationFrame(refreshTimeoutRef.current);
-      }
-    };
-  }, [debouncedRefresh]);
-
-  const updatePaddles = () => {
+  const updatePaddles = useCallback(() => {
     const el = railRef.current;
     if (!el) return;
 
     const maxScrollLeft = el.scrollWidth - el.clientWidth;
     setCanScrollLeft(el.scrollLeft > 4);
     setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
-  };
+  }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     updatePaddles();
 
     const el = railRef.current;
     if (!el) return;
 
-    const onScroll = () => updatePaddles();
-    el.addEventListener('scroll', onScroll, { passive: true });
-
-    const onResize = () => updatePaddles();
-    window.addEventListener('resize', onResize);
+    el.addEventListener('scroll', updatePaddles, { passive: true });
+    window.addEventListener('resize', updatePaddles);
 
     return () => {
-      el.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
+      el.removeEventListener('scroll', updatePaddles);
+      window.removeEventListener('resize', updatePaddles);
     };
-  }, []);
+  }, [updatePaddles]);
 
-  const scrollByCards = (direction) => {
+  // Refresh ScrollTrigger after content loads
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const timeoutId = setTimeout(() => {
+      debouncedRefresh();
+    }, 150);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (refreshTimeoutRef.current) {
+        cancelAnimationFrame(refreshTimeoutRef.current);
+      }
+    };
+  }, [debouncedRefresh]);
+
+  const scrollByCards = useCallback((direction) => {
     const el = railRef.current;
     if (!el) return;
 
@@ -206,15 +106,15 @@ const Portfolio = () => {
       left: direction === 'left' ? -step : step,
       behavior: 'smooth',
     });
-  };
+  }, []);
 
   return (
     <section className="portfolio-tiles" ref={sectionRef} aria-labelledby="portfolioTitle">
       <div className="portfolio-tiles__header">
         <span id="portfolio" className="section-anchor" aria-hidden="true" />
-        <h2 className="portfolio-tiles__title">
+        <ScrollReveal as="h2" className="portfolio-tiles__title" y={25} duration={0.6} start="top 92%">
           Our Portfolio
-        </h2>
+        </ScrollReveal>
       </div>
 
       <div className="portfolio-tiles__railWrap">
@@ -235,15 +135,23 @@ const Portfolio = () => {
 
         <div className="portfolio-tiles__rail" ref={railRef}>
           {portfolioItems.map((item, index) => (
-            <article className="portfolio-tiles__card" key={item.title}>
+            <ScrollReveal
+              as="article"
+              className="portfolio-tiles__card"
+              key={item.title}
+              y={30}
+              duration={0.6}
+              delay={index * 0.08}
+              start="top 90%"
+            >
               <div className="portfolio-tiles__media" aria-hidden="true">
-                <LazyImage
+                <BlurUpImage
                   src={item.image}
                   alt=""
+                  fill
                   sizes="(max-width: 768px) 85vw, 430px"
                   onLoad={handleImageLoad}
                   onError={handleImageLoad}
-                  isIOS={isIOS}
                 />
                 <div className="portfolio-tiles__overlay" />
               </div>
@@ -252,7 +160,7 @@ const Portfolio = () => {
                 <div className="portfolio-tiles__eyebrow">{item.eyebrow}</div>
                 <h3 className="portfolio-tiles__cardTitle">{item.title}</h3>
               </div>
-            </article>
+            </ScrollReveal>
           ))}
         </div>
       </div>
