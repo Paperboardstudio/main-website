@@ -38,13 +38,27 @@ const SectionFallback = ({ height = '100vh' }) => (
   }} />
 );
 
+// Check if mobile viewport
+const isMobileViewport = () => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 768;
+};
+
 // IntersectionObserver-based lazy section loader
 // On iOS: smaller rootMargin to prevent loading everything at once when scrolling fast
-const LazySection = ({ children, height = '100vh', rootMargin = '200px', iosRootMargin = '50px', fallback }) => {
+const LazySection = ({ children, height = '100vh', mobileHeight, rootMargin = '200px', iosRootMargin = '50px', fallback }) => {
   const ref = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => isMobileViewport());
   const isIOS = useMemo(() => isIOSDevice(), []);
   const effectiveMargin = isIOS ? iosRootMargin : rootMargin;
+  const effectiveHeight = (isMobile && mobileHeight) ? mobileHeight : height;
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(isMobileViewport());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
@@ -65,17 +79,25 @@ const LazySection = ({ children, height = '100vh', rootMargin = '200px', iosRoot
   }, [effectiveMargin]);
 
   return (
-    <div ref={ref} style={{ minHeight: height }}>
-      {shouldLoad ? children : (fallback || <SectionFallback height={height} />)}
+    <div ref={ref} style={{ minHeight: effectiveHeight, background: 'black' }}>
+      {shouldLoad ? children : (fallback || <SectionFallback height={effectiveHeight} />)}
     </div>
   );
 };
 
 // Section that unmounts its children when scrolled far past (memory optimization for iOS)
-const UnmountableSection = ({ children, height = '100vh', fallback }) => {
+const UnmountableSection = ({ children, height = '100vh', mobileHeight, fallback }) => {
   const ref = useRef(null);
   const [shouldRender, setShouldRender] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => isMobileViewport());
   const isIOS = useMemo(() => isIOSDevice(), []);
+  const effectiveHeight = (isMobile && mobileHeight) ? mobileHeight : height;
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(isMobileViewport());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Only enable unmounting behavior on iOS to save memory
@@ -98,8 +120,8 @@ const UnmountableSection = ({ children, height = '100vh', fallback }) => {
   }, [isIOS]);
 
   return (
-    <div ref={ref} style={{ minHeight: height }}>
-      {shouldRender ? children : (fallback || <SectionFallback height={height} />)}
+    <div ref={ref} style={{ minHeight: effectiveHeight, background: 'black' }}>
+      {shouldRender ? children : (fallback || <SectionFallback height={effectiveHeight} />)}
     </div>
   );
 };
@@ -161,6 +183,7 @@ const HomePage = () => {
         className="app"
         style={{
           minHeight: '100vh',
+          background: 'black',
           // Use native smooth scroll on iOS
           scrollBehavior: isIOS ? 'smooth' : 'auto'
         }}
@@ -177,10 +200,10 @@ const HomePage = () => {
         </UnmountableSection>
 
         {/* Transition section - lazy load when approaching, unmounts when scrolled past */}
-        <UnmountableSection height="100vh">
-          <LazySection height="100vh" rootMargin="300px" iosRootMargin="100px">
-            <section style={{ height: '100vh' }}>
-              <Suspense fallback={<SectionFallback />}>
+        <UnmountableSection height="100vh" mobileHeight="auto">
+          <LazySection height="100vh" mobileHeight="auto" rootMargin="300px" iosRootMargin="100px">
+            <section style={{ background: 'black' }}>
+              <Suspense fallback={<SectionFallback height="auto" />}>
                 <TransitionPage />
               </Suspense>
             </section>
@@ -188,8 +211,8 @@ const HomePage = () => {
         </UnmountableSection>
 
         {/* Main section (Services + Portfolio) - lazy load when approaching */}
-        <LazySection height="100vh" rootMargin="400px" iosRootMargin="150px">
-          <section style={{ minHeight: '100vh' }}>
+        <LazySection height="auto" mobileHeight="auto" rootMargin="400px" iosRootMargin="150px">
+          <section style={{ minHeight: '100vh', background: 'black' }}>
             <Suspense fallback={<SectionFallback />}>
               <MainPage />
             </Suspense>
