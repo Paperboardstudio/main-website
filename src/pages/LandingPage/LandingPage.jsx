@@ -269,34 +269,6 @@ const LandingCanvas = () => {
   // Check if touch device (mobile or iOS)
   const isTouchDevice = isMobile || isIOS;
 
-  // iOS: render static fallback immediately (no WebGL)
-  if (isIOS) {
-    return (
-      <div
-        ref={containerRef}
-        style={{ position: 'relative', width: '100%', height: '100vh', overflowX: 'hidden', background: 'black' }}
-        onContextMenu={handleContextMenu}
-      >
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          textAlign: 'center',
-          color: 'white',
-          fontFamily: 'serif',
-        }}>
-          <div style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)', letterSpacing: '0.3em', marginBottom: '0.5rem' }}>
-            P A P E R B O A R D
-          </div>
-          <div style={{ fontSize: 'clamp(1.2rem, 4vw, 2.5rem)', letterSpacing: '0.3em' }}>
-            S T U D I O
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       ref={containerRef}
