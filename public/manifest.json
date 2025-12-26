@@ -1,6 +1,7 @@
 {
   "short_name": "Paperboard Studio",
-  "name": "Paperboard Studio",
+  "name": "Paperboard Studio - Digital Solutions & App Development",
+  "description": "We provide entrepreneurs and companies around the world with efficient and innovative digital solutions.",
   "icons": [
     {
       "src": "PaperboardStudio_logo.png",
@@ -16,5 +17,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#000000"
 }

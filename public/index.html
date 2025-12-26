@@ -5,10 +5,33 @@
     <link rel="icon" href="%PUBLIC_URL%/PaperboardStudio_logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Paperboard Studio - Efficient and innovative digital solutions"
-    />
+
+    <!-- Primary Meta Tags -->
+    <title>Paperboard Studio | Digital Solutions & App Development</title>
+    <meta name="title" content="Paperboard Studio | Digital Solutions & App Development" />
+    <meta name="description" content="We provide entrepreneurs and companies around the world with efficient and innovative digital solutions. Mobile apps, web development, AR experiences, and cutting-edge design." />
+    <meta name="keywords" content="app development, mobile apps, web development, augmented reality, digital solutions, software development, UI/UX design, React, innovative technology" />
+    <meta name="author" content="Paperboard Studio" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://paperboardstudio.com/" />
+    <meta property="og:title" content="Paperboard Studio | Digital Solutions & App Development" />
+    <meta property="og:description" content="We provide entrepreneurs and companies around the world with efficient and innovative digital solutions. Mobile apps, web development, AR experiences, and cutting-edge design." />
+    <meta property="og:image" content="https://paperboardstudio.com/PaperboardStudio_logo.png" />
+    <meta property="og:site_name" content="Paperboard Studio" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://paperboardstudio.com/" />
+    <meta property="twitter:title" content="Paperboard Studio | Digital Solutions & App Development" />
+    <meta property="twitter:description" content="We provide entrepreneurs and companies around the world with efficient and innovative digital solutions. Mobile apps, web development, AR experiences, and cutting-edge design." />
+    <meta property="twitter:image" content="https://paperboardstudio.com/PaperboardStudio_logo.png" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://paperboardstudio.com/" />
+
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/PaperboardStudio_logo.png" />
 
     <!-- Preload critical assets for faster initial paint -->
@@ -24,29 +47,50 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Paperboard Studio</title>
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Paperboard Studio",
+      "url": "https://paperboardstudio.com",
+      "logo": "https://paperboardstudio.com/PaperboardStudio_logo.png",
+      "description": "We provide entrepreneurs and companies around the world with efficient and innovative digital solutions.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+358469371879",
+        "email": "contact@paperboardstudio.com",
+        "contactType": "customer service"
+      },
+      "sameAs": [
+        "https://facebook.com/PaperboardSt",
+        "https://www.linkedin.com/company/paperboard-studio"
+      ]
+    }
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <div style="background-color: #000; color: #fff; min-height: 100vh; padding: 2rem; font-family: Arial, sans-serif;">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">Paperboard Studio</h1>
+        <p style="font-size: 1.1rem; line-height: 1.6; max-width: 600px;">
+          We provide entrepreneurs and companies around the world with efficient and innovative digital solutions.
+          Leveraging cutting-edge technology and creativity, we are committed to creating solutions that deliver results for our clients.
+        </p>
+        <h2 style="font-size: 1.5rem; margin-top: 2rem;">Our Services</h2>
+        <ul style="line-height: 1.8;">
+          <li>Mobile App Development</li>
+          <li>Web Development</li>
+          <li>Augmented Reality Experiences</li>
+          <li>UI/UX Design</li>
+        </ul>
+        <h2 style="font-size: 1.5rem; margin-top: 2rem;">Contact Us</h2>
+        <p>Email: <a href="mailto:contact@paperboardstudio.com" style="color: #fff;">contact@paperboardstudio.com</a></p>
+        <p>Phone: <a href="tel:+358469371879" style="color: #fff;">+358 46 937 1879</a></p>
+        <p style="margin-top: 2rem; opacity: 0.7;">Please enable JavaScript for the full interactive experience.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
