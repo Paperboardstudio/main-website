@@ -21,7 +21,7 @@ const footerData = {
       { href: 'https://www.linkedin.com/company/paperboard-studio', label: 'LinkedIn' },
     ],
   },
-  copyright: '2025. All rights reserved.',
+  copyright: 'Copyright © 2026 Paperboard Studio Oy. All rights reserved.',
 };
 
 export const Footer = () => {
@@ -33,7 +33,7 @@ export const Footer = () => {
           <p className="footer__text">{footerData.about.text}</p>
         </div>
         <div className="footer__links">
-          <h2 className="footer__title">Quick Links</h2>
+          <h2 className="footer__title"></h2>
           <ul className="footer__list">
             {footerData.quickLinks.map((link, index) => (
               <li className="footer__item" key={index}>
